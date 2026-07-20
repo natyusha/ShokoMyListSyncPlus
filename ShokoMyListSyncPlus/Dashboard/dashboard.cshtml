@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Shoko MyList Sync Plus</title>
+    <base href="/api/plugin/ShokoMyListSyncPlus/dashboard/" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="dashboard">
+      <header>
+        <h1>SHOKO MYLIST SYNC PLUS</h1>
+      </header>
+
+      <section>
+        <h2>
+          <svg class="icon-svg"><use href="img/icons.svg#cog-outline"></use></svg>
+          Configuration
+        </h2>
+        <div>
+          <label for="api-key" title="Shoko API Key">Shoko API Key:</label>
+          <input id="api-key" type="text" placeholder="Shoko API Key" />
+        </div>
+
+        <div id="drop-zone">Drag and drop your <b>xml-cdb</b> export (<b>.xml</b> or <b>.tgz</b>) here<br />or click to browse<br /><small id="file-name"></small></div>
+        <input type="file" id="file-input" style="display: none" accept=".xml,.tgz" />
+
+        <div class="full">
+          <button id="start-sync" disabled>Start MyList Sync</button>
+          <label class="shoko-checkbox">
+            <input type="checkbox" id="dry-run" checked />
+            <span class="shoko-checkbox-icon" aria-hidden="true">
+              <svg class="unchecked"><use href="img/icons.svg#checkbox-blank-circle-outline"></use></svg>
+              <svg class="checked"><use href="img/icons.svg#checkbox-marked-circle-outline"></use></svg>
+            </span>
+            <span class="shoko-checkbox-text">
+              <span class="shoko-checkbox-title">Dry Run</span><br />
+              <small>Do not push data to MyList</small>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <div class="status-header">
+          <h2>
+            <svg class="icon-svg"><use href="img/icons.svg#text-box-outline"></use></svg>
+            Status Log
+          </h2>
+          <div id="report-link-container" style="display: none">[<a id="report-link" href="#" target="_blank" class="log-link">view log</a>]</div>
+        </div>
+
+        <div class="stats">
+          <div>Missing: <span id="stat-missing">0</span></div>
+          <div>Out-of-Sync: <span id="stat-out-of-sync">0</span></div>
+          <div>Processed: <span id="stat-processed">0</span></div>
+          <div>Errors: <span id="stat-errors">0</span></div>
+        </div>
+        <div id="log-area"></div>
+      </section>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

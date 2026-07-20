@@ -1,0 +1,331 @@
+/* #region MARK: Themes
+*/
+:root {
+  /* Default Theme: Shoko NN (https://shokoanime.com/downloads/webui-themes/shoko-nn) */
+  --bg-color: #0f0f0f;
+  --panel-color: #1c1c1c;
+  --border-color: #0f0f0f;
+  --inset-color: #151515;
+  --text-color: #ddd;
+  --highlight-color: #94aad1;
+  --button-color: #a497b0;
+  --hover-color: #ea005e;
+  --danger-color: #cc0000;
+  --warning-color: #f9c851;
+  --ok-color: #00ab3f;
+  --tooltip-color: #222;
+  --black-t60: #00000099;
+  --glow: #94aad14d;
+}
+/* #endregion */
+
+/* #region MARK: Base Styles
+*/
+@font-face {
+  font-style: normal;
+  font-weight: 200;
+  src: url("../fonts/iosevka-nn-extralight.subset.woff2") format("woff2");
+  font-family: "Iosevka NN Extralight";
+  font-display: swap;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/sora-v17-latin-regular.woff2") format("woff2");
+  font-family: "Sora";
+  font-display: swap;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/sora-v17-latin-500.woff2") format("woff2");
+  font-family: "Sora";
+  font-display: swap;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+body {
+  margin: 11px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Sora", "Segoe UI Symbol", sans-serif;
+}
+section {
+  margin: 12px 2px 0 2px;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--panel-color);
+  padding: 12px;
+}
+h2 {
+  margin: 0 0 8px 0;
+  font-weight: 500;
+  font-size: 1.17em;
+}
+hr {
+  margin: 0 0 4px 0;
+  border: none;
+  background: var(--inset-color);
+  padding: 0;
+  height: 1px;
+}
+button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 2px solid var(--bg-color);
+  border-radius: 0.5rem;
+  background: var(--button-color);
+  padding: 0 1rem;
+  height: 2.875rem;
+  color: var(--bg-color);
+  font-weight: 500;
+  font-size: 0.9em;
+  text-align: center;
+}
+button:hover {
+  background: var(--hover-color);
+}
+input:not([type="checkbox"]) {
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+  margin: 2px 0 6px;
+  outline: none;
+  border: 1px solid var(--bg-color);
+  border-radius: 0.25em;
+  background: var(--inset-color);
+  padding: 6px;
+  width: 100%;
+  height: 2.5em;
+  color: var(--text-color);
+  font-size: 0.9em;
+  font-family: "Sora", sans-serif;
+}
+button {
+  font-family: "Sora", sans-serif;
+}
+input:not([type="checkbox"]):focus {
+  box-shadow: 0 0 4px 2px var(--glow);
+  border-color: var(--highlight-color);
+}
+label {
+  display: inline-block;
+  margin: 6px 0 2px;
+  margin-right: 8px;
+}
+small {
+  color: color-mix(in srgb, currentColor 60%, transparent);
+}
+a {
+  transition: all 0.3s ease-in-out;
+  color: var(--highlight-color);
+  text-decoration-style: dotted;
+}
+a:hover {
+  opacity: 1;
+  color: var(--hover-color);
+}
+.full {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.full > * {
+  flex: 1;
+}
+/* #endregion */
+
+/* #region MARK: Icons
+*/
+svg {
+  width: 1.282em;
+  height: 1.282em;
+}
+h2 .icon-svg,
+.api-svg {
+  fill: var(--highlight-color);
+}
+.icon-svg {
+  margin: 0 2px -4px 2px;
+}
+/* #endregion */
+
+/* #region MARK: Styled Checkboxes
+*/
+label.shoko-checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  cursor: pointer;
+  margin-left: 2px;
+  padding: 0.219rem 0;
+  user-select: none;
+}
+label.shoko-checkbox input[type="checkbox"] {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  white-space: nowrap;
+}
+.shoko-checkbox-text {
+  display: inline-block;
+  margin-top: -2px;
+  line-height: 1em;
+}
+.shoko-checkbox-title {
+  font-weight: 500;
+}
+.shoko-checkbox-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  fill: var(--highlight-color);
+}
+.shoko-checkbox-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+label.shoko-checkbox:hover .shoko-checkbox-icon {
+  fill: var(--hover-color);
+}
+.shoko-checkbox-icon .checked,
+label.shoko-checkbox input[type="checkbox"]:checked + .shoko-checkbox-icon .unchecked {
+  display: none;
+}
+label.shoko-checkbox input[type="checkbox"]:checked + .shoko-checkbox-icon .checked {
+  display: block;
+  fill: var(--hover-color);
+}
+/* #endregion */
+
+/* #region MARK: Loading Buttons
+*/
+button.loading {
+  position: relative;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+button.loading:hover {
+  background-color: var(--button-color);
+}
+.button-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.button-spinner svg {
+  display: block;
+  transform-origin: center center;
+  animation: spin 900ms linear infinite;
+  fill: var(--bg-color);
+  width: 100%;
+  height: 100%;
+}
+/* #endregion */
+
+/* #region MARK: Disabled Controls
+*/
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+button:disabled:hover {
+  background: var(--button-color);
+}
+/* #endregion */
+
+/* #region MARK: Plugin Specific Styles
+*/
+#dashboard {
+  margin: 0 auto;
+  max-width: 675px;
+}
+h1 {
+  margin: 0;
+  margin-left: 0.1em;
+  color: var(--text-color);
+  font-weight: normal;
+  font-size: 3em;
+  font-family: "Iosevka NN Extralight", sans-serif;
+  letter-spacing: -0.06em;
+}
+input:not([type="checkbox"]) {
+  max-width: 22.2em;
+}
+label.shoko-checkbox {
+  margin-left: 2em;
+}
+#drop-zone {
+  transition: background 0.2s;
+  cursor: pointer;
+  margin: 15px 0;
+  border: 2px dashed var(--highlight-color);
+  border-radius: 8px;
+  background: var(--inset-color);
+  padding: 40px;
+  text-align: center;
+}
+#drop-zone:hover,
+#drop-zone.dragover {
+  background: color-mix(in srgb, var(--inset-color), white 5%);
+}
+#file-name {
+  display: block;
+  margin-top: 10px;
+  color: var(--highlight-color);
+}
+#log-area {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--inset-color);
+  padding: 10px;
+  height: 300px;
+  overflow-y: auto;
+  font-size: 1em;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+}
+.stats span {
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 15px;
+}
+.status-header h2 {
+  margin-bottom: 0;
+}
+#report-link-container {
+  font-weight: 500;
+  font-size: 0.95em;
+}
+/* #endregion */

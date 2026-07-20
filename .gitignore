@@ -1,0 +1,9 @@
+# Build results
+bin/
+obj/
+publish-linux/
+
+# VS Code
+*.code-workspace
+*.lscache
+.vscode/
