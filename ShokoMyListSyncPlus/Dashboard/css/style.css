@@ -90,6 +90,7 @@ button {
   color: var(--bg-color);
   font-weight: 500;
   font-size: 0.9em;
+  font-family: "Sora", sans-serif;
   text-align: center;
 }
 button:hover {
@@ -108,9 +109,6 @@ input:not([type="checkbox"]) {
   height: 2.5em;
   color: var(--text-color);
   font-size: 0.9em;
-  font-family: "Sora", sans-serif;
-}
-button {
   font-family: "Sora", sans-serif;
 }
 input:not([type="checkbox"]):focus {
@@ -150,8 +148,7 @@ svg {
   width: 1.282em;
   height: 1.282em;
 }
-h2 .icon-svg,
-.api-svg {
+h2 .icon-svg {
   fill: var(--highlight-color);
 }
 .icon-svg {

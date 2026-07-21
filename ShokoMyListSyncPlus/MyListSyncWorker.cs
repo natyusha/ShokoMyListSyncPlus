@@ -27,6 +27,9 @@ public class SyncState
     /// <summary>The total number of episodes present on MyList but out-of-sync with Shoko's watched state.</summary>
     public int OutOfSyncCount { get; set; }
 
+    /// <summary>The total number of episodes watched on AniDB but unwatched locally (informational).</summary>
+    public int AniDbWatchedLocalUnwatchedCount { get; set; }
+
     /// <summary>The number of episodes evaluated so far.</summary>
     public int ProcessedEpisodes { get; set; }
 
@@ -73,12 +76,14 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
         State.DryRun = dryRun;
         State.MissingCount = 0;
         State.OutOfSyncCount = 0;
+        State.AniDbWatchedLocalUnwatchedCount = 0;
         State.ProcessedEpisodes = 0;
         State.EpisodesSynced = 0;
         State.LastReportUrl = null;
         State.Logs.Clear();
 
         var reportDetails = new List<string>();
+        var infoDetails = new List<string>();
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
         s_logger.Info("MyListSync: Starting task (DryRun: {0}, File: {1})", dryRun, filename);
@@ -101,8 +106,6 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
 
             var missingEpisodes = new List<IShokoEpisode>();
             var allSeries = metadataService.GetAllShokoSeries() ?? [];
-            int missingCount = 0;
-            int outOfSyncCount = 0;
 
             foreach (var series in allSeries)
             {
@@ -112,28 +115,32 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
                         continue;
 
                     var ud = userDataService.GetEpisodeUserData(ep, defaultUser);
-                    bool localWatched = ud?.IsWatched ?? false;
+                    bool localWatched = ud?.LastPlayedAt != null;
 
                     if (!mylistEpisodes.TryGetValue(ep.AnidbEpisodeID, out bool aniDbWatched))
                     {
                         // Case 1: Completely missing from AniDB MyList
                         missingEpisodes.Add(ep);
-                        missingCount++;
+                        State.MissingCount++;
                     }
                     else if (localWatched && !aniDbWatched)
                     {
                         // Case 2: Present on MyList, but marked unwatched on AniDB and watched in Shoko
                         missingEpisodes.Add(ep);
-                        outOfSyncCount++;
+                        State.OutOfSyncCount++;
+                    }
+                    else if (!localWatched && aniDbWatched)
+                    {
+                        // Case 3: Watched on AniDB but unwatched locally (Informational only)
+                        infoDetails.Add($"[{ep.Series?.PreferredTitle?.Value}] S{ep.SeasonNumber:D2}E{ep.EpisodeNumber:D2} (AniDB: {ep.AnidbEpisodeID})");
+                        State.AniDbWatchedLocalUnwatchedCount++;
                     }
                 }
             }
 
-            State.MissingCount = missingCount;
-            State.OutOfSyncCount = outOfSyncCount;
-            int total = missingCount + outOfSyncCount;
-            s_logger.Info("MyListSync: Scan complete -> Found {0} missing and {1} out-of-sync episodes requiring alignment.", missingCount, outOfSyncCount);
-            Log($"Found {missingCount} missing and {outOfSyncCount} out-of-sync episodes requiring alignment with AniDB MyList.");
+            int total = State.MissingCount + State.OutOfSyncCount;
+            s_logger.Info("MyListSync: Scan complete -> Found {0} missing and {1} out-of-sync episodes requiring alignment.", State.MissingCount, State.OutOfSyncCount);
+            Log($"Found {State.MissingCount} missing and {State.OutOfSyncCount} out-of-sync episodes requiring alignment with AniDB MyList.");
 
             if (total == 0)
             {
@@ -164,9 +171,9 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
                     bool isLastInSeries = i == epsInSeries.Count - 1;
 
                     var udOriginal = userDataService.GetEpisodeUserData(ep, defaultUser);
-                    string stateInfo =
-                        udOriginal != null ? $"Watched: {udOriginal.IsWatched}, Rating: {(udOriginal.HasUserRating ? udOriginal.UserRating.Value.ToString() : "None")}" : "Watched: False, Rating: None";
+                    bool localWatched = udOriginal?.LastPlayedAt != null;
 
+                    string stateInfo = $"Watched: {localWatched}, Rating: {(udOriginal?.HasUserRating == true ? udOriginal.UserRating.Value.ToString() : "None")}";
                     bool onMyList = mylistEpisodes.ContainsKey(ep.AnidbEpisodeID);
                     string typePrefix = onMyList ? "[OUT OF SYNC]" : "[MISSING]";
                     string epDisplay = $"{typePrefix} [{ep.Series?.PreferredTitle?.Value}] S{ep.SeasonNumber:D2}E{ep.EpisodeNumber:D2} (AniDB: {ep.AnidbEpisodeID}) -> {stateInfo}";
@@ -197,10 +204,9 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
                         }
 
                         // Step 2: Toggle watched status if watched, to force database write events to fire, triggering Shoko to push the watched state to AniDB
-                        bool originalWatched = udOriginal?.IsWatched ?? false;
                         DateTime? originalDate = udOriginal?.LastPlayedAt;
 
-                        if (originalWatched)
+                        if (localWatched)
                         {
                             // Pass false to updateStatsNow on the temporary toggle to prevent Shoko from doing redundant statistics calculations
                             await userDataService.SetEpisodeWatchedStatus(ep, defaultUser, false, originalDate, VideoUserDataSaveReason.UserInteraction, false, false).ConfigureAwait(false);
@@ -236,7 +242,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
         finally
         {
             sw.Stop();
-            GenerateReport(sw.Elapsed, reportDetails);
+            GenerateReport(sw.Elapsed, reportDetails, infoDetails);
             fileStream?.Dispose();
             State.IsRunning = false;
         }
@@ -246,6 +252,9 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
 
     #region Internal Parsers & Logging
 
+    /// <summary>Decompresses a .tgz archive on the fly and parses the embedded mylist.xml.</summary>
+    /// <param name="tgzStream">The compressed tarball stream.</param>
+    /// <returns>A dictionary of AniDB episode IDs mapped to their watched state.</returns>
     private Dictionary<int, bool> ParseTgzForEpisodes(Stream tgzStream)
     {
         using var gzip = new GZipStream(tgzStream, CompressionMode.Decompress);
@@ -262,6 +271,9 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
         return [];
     }
 
+    /// <summary>Highly optimized stream reader that rips through XML extracting Episode IDs and watched states without allocating massive DOM trees.</summary>
+    /// <param name="stream">The raw XML stream.</param>
+    /// <returns>A dictionary of AniDB episode IDs mapped to their watched state.</returns>
     private Dictionary<int, bool> ParseXmlForEpisodes(Stream stream)
     {
         var episodes = new Dictionary<int, bool>();
@@ -292,9 +304,15 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
         return episodes;
     }
 
+    /// <summary>Pushes a message to the real-time log queue.</summary>
+    /// <param name="message">The text to log.</param>
     private void Log(string message) => State.Logs.Enqueue($"[{DateTime.Now:HH:mm:ss}] {message}");
 
-    private void GenerateReport(TimeSpan elapsed, List<string> details)
+    /// <summary>Builds and saves a formatted text report of the sync operation to the logs directory.</summary>
+    /// <param name="elapsed">Total time elapsed during the task.</param>
+    /// <param name="details">List of descriptive strings for each missing episode.</param>
+    /// <param name="infoDetails">List of descriptive strings for episodes watched on AniDB but unwatched locally.</param>
+    private void GenerateReport(TimeSpan elapsed, List<string> details, List<string> infoDetails)
     {
         try
         {
@@ -306,6 +324,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
             sb.AppendLine($"  Mode                     : {(State.DryRun ? "Dry Run" : "Live")}");
             sb.AppendLine($"  Missing Episodes Found   : {State.MissingCount}");
             sb.AppendLine($"  Out-of-Sync Episodes     : {State.OutOfSyncCount}");
+            sb.AppendLine($"  AniDB Watched / Unwatched: {State.AniDbWatchedLocalUnwatchedCount}");
             sb.AppendLine($"  Episodes Synced          : {State.EpisodesSynced}");
             sb.AppendLine($"  Errors                   : {State.Errors}");
 
@@ -314,6 +333,14 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
                 sb.AppendLine();
                 sb.AppendLine("Out-of-Sync & Missing Episodes Details:");
                 foreach (var d in details.OrderBy(x => x))
+                    sb.AppendLine($"  {d}");
+            }
+
+            if (infoDetails.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("Episodes Watched on AniDB but Unwatched in Shoko (Informational):");
+                foreach (var d in infoDetails.OrderBy(x => x))
                     sb.AppendLine($"  {d}");
             }
 

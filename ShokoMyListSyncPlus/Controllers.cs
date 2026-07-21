@@ -76,6 +76,7 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
                 worker.State.DryRun,
                 worker.State.MissingCount,
                 worker.State.OutOfSyncCount,
+                worker.State.AniDbWatchedLocalUnwatchedCount,
                 worker.State.ProcessedEpisodes,
                 worker.State.EpisodesSynced,
                 worker.State.Errors,

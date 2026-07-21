@@ -25,6 +25,7 @@
    * Toggles a button's loading state with a spinner overlay.
    * @param {HTMLElement} btn - The button to modify.
    * @param {boolean} isLoading - True to enable the loading overlay.
+   * @returns {void}
    */
   function setButtonLoading(btn, isLoading) {
     if (!btn) return;
@@ -41,16 +42,20 @@
   }
 
   dropZone.onclick = () => fileInput.click();
+
   dropZone.ondragover = (e) => {
     e.preventDefault();
     dropZone.classList.add("dragover");
   };
+
   dropZone.ondragleave = () => dropZone.classList.remove("dragover");
+
   dropZone.ondrop = (e) => {
     e.preventDefault();
     dropZone.classList.remove("dragover");
     if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
   };
+
   fileInput.onchange = (e) => {
     if (e.target.files.length) handleFile(e.target.files[0]);
   };
@@ -58,6 +63,7 @@
   /**
    * Validates and accepts the dropped or selected file.
    * @param {File} file - The file to process.
+   * @returns {void}
    */
   function handleFile(file) {
     selectedFile = file;
@@ -69,6 +75,7 @@
   /**
    * Appends a message to the real-time UI log area and scrolls to the bottom.
    * @param {string} msg - The log message text.
+   * @returns {void}
    */
   function log(msg) {
     logArea.textContent += msg + "\n";
@@ -77,6 +84,7 @@
 
   /**
    * Polls the server API for current sync status and updates the UI counters.
+   * @returns {Promise<void>}
    */
   async function pollStatus() {
     try {
