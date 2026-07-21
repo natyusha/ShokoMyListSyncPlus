@@ -12,6 +12,34 @@
   "image_url": null,
   "releases": [
     {
+      "version": "1.0.1",
+      "tag": "v1.0.1",
+      "source_revision": "3e30c79716a16967f23d1d039d217593f3a85538",
+      "released_at": "2026-07-21T08:35:35Z",
+      "channel": "Stable",
+      "release_notes": "**Changes**\r\n- Replace unreliable IsWatched property evaluation with a strict LastPlayedAt null check in MylistSyncWorker\r\n- Ensure the log reports and SyncState arrays correctly reflect the true local watched state\r\n- Add scanning logic to detect episodes watched on AniDB but unwatched in Shoko\r\n- Output a purely informational section to the final report log for AniDB-watched episodes\r\n- Output a summary count of these ignored episodes to the live dashboard log pane\r\n- Remove unused .api-svg class from style.css\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v1.0.0...v1.0.1",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_linux-arm64.zip",
+          "checksum": "c44f08a14c10795d52823f8c68bd04f1e091a1e8900dceca1627ab8ba1148543"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_linux-x64.zip",
+          "checksum": "3329c0e11f06bf80b460e350e5d67ade784cde67bf5b70506730c19a19a9d27e"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_win-x64.zip",
+          "checksum": "4bd49a78d857c070312a4cf75b26d611ed73dece1babb82a7538f0964b58b043"
+        }
+      ]
+    },
+    {
       "version": "1.0.0",
       "tag": "v1.0.0",
       "source_revision": "f79708a75e1e729e64fc3a21779fc3a64acd20e2",
