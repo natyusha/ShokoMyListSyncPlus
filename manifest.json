@@ -10,5 +10,34 @@
     "mylist"
   ],
   "image_url": null,
-  "releases": []
+  "releases": [
+    {
+      "version": "1.0.0",
+      "tag": "v1.0.0",
+      "source_revision": "f79708a75e1e729e64fc3a21779fc3a64acd20e2",
+      "released_at": "2026-07-21T06:43:20Z",
+      "channel": "Stable",
+      "release_notes": "The third initial release attempt due to a malformed workflow.",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_linux-arm64.zip",
+          "checksum": "d852dfb79f119e1527fcb48ed6e6a0c80e1cf42d33d4d8bc869c2b6623c8d0d4"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_linux-x64.zip",
+          "checksum": "94f5e34da8bc0fd30d106a7245c5238824dcf2d52679301a8760a9499b11922b"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_win-x64.zip",
+          "checksum": "c33676f98b88d57f95ebf10d825da98e5c6b2e2ccf3891d9d482b13c6754afff"
+        }
+      ]
+    }
+  ]
 }
