@@ -75,11 +75,11 @@ jobs:
       - name: Check Dashboard Layout (Prettier)
         run: |
           npm install --save-dev prettier
-          npx prettier --check "ShokoRelay/Dashboard/**/*.js" "ShokoRelay/Dashboard/**/*.css"
-          npx prettier --check "ShokoRelay/Dashboard/**/*.cshtml" --parser html
+          npx prettier --check "ShokoMyListSyncPlus/Dashboard/**/*.js" "ShokoMyListSyncPlus/Dashboard/**/*.css"
+          npx prettier --check "ShokoMyListSyncPlus/Dashboard/**/*.cshtml" --parser html
 
       - name: Check CSS Property Order (Stylelint Concentric)
         run: |
           npm install --save-dev stylelint stylelint-config-concentric
           echo '{ "extends": ["stylelint-config-concentric"] }' > .stylelintrc.json
-          npx stylelint "ShokoRelay/Dashboard/**/*.css"
+          npx stylelint "ShokoMyListSyncPlus/Dashboard/**/*.css"

@@ -1,6 +1,6 @@
 <!-- prettier-ignore-start -->
 
-![Shoko Relay Logo](https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo-small.png "Shoko MyList Sync+")  
+![Shoko MyList Sync+ Logo](https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo-small.png "Shoko MyList Sync+")  
 [![Discord](https://img.shields.io/discord/96234011612958720?logo=discord&logoColor=fff&label=Discord&color=5865F2 "Shoko Discord")](https://discord.gg/shokoanime)
 [![Shoko Docs](https://img.shields.io/badge/VitePress-Shoko_Docs-4E7CF5?logo=vitepress&logoColor=fff)](https://docs.shokoanime.com/)
 [![GitHub Latest](https://img.shields.io/github/v/tag/natyusha/ShokoMyListSyncPlus?label=Latest&logo=github&logoColor=fff)](https://github.com/natyusha/ShokoMyListSyncPlus/releases/latest)
