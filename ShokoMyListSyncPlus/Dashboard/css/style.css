@@ -24,8 +24,8 @@
 @font-face {
   font-style: normal;
   font-weight: 200;
-  src: url("../fonts/iosevka-nn-extralight.subset.woff2") format("woff2");
-  font-family: "Iosevka NN Extralight";
+  src: url("../fonts/iosevka-nn-condensed-extralight.subset.woff2") format("woff2");
+  font-family: "Iosevka NN Condensed Extralight";
   font-display: swap;
 }
 @font-face {
@@ -297,6 +297,67 @@ button.float-link {
 }
 /* #endregion */
 
+/* #region MARK: Tooltips
+*/
+.tooltip-core {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 2000;
+  will-change: opacity;
+  overflow: visible;
+  pointer-events: none;
+}
+.tooltip-show {
+  opacity: 0.9;
+  transition: opacity 0.15s ease-out;
+}
+.tooltip-closing {
+  opacity: 0;
+  transition: opacity 0.15s ease-in;
+}
+.tooltip-box {
+  border-radius: 3px;
+  padding: 8px 16px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  font-size: 0.9em;
+  word-wrap: break-word;
+}
+.tooltip-arrow {
+  position: absolute;
+  background: inherit;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+.tooltip-place-top > .tooltip-arrow {
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+.tooltip-place-bottom > .tooltip-arrow {
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(225deg);
+}
+.tooltip-place-left > .tooltip-arrow {
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%) rotate(315deg);
+}
+.tooltip-place-right > .tooltip-arrow {
+  top: 50%;
+  left: -4px;
+  transform: translateY(-50%) rotate(135deg);
+}
+.tooltip-dark {
+  background: var(--tooltip-color);
+  color: var(--text-color);
+}
+/* #endregion */
+
 /* #region MARK: Plugin Specific Styles
 */
 #dashboard {
@@ -308,7 +369,7 @@ h1 {
   color: var(--text-color);
   font-weight: normal;
   font-size: 3em;
-  font-family: "Iosevka NN Extralight", sans-serif;
+  font-family: "Iosevka NN Condensed Extralight", sans-serif;
   letter-spacing: -0.06em;
 }
 input:not([type="checkbox"]) {

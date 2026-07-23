@@ -6,7 +6,7 @@ public static class ShokoMyListSyncPlusConstants
     #region Plugin Identity
 
     /// <summary>Display name of the plugin.</summary>
-    public const string Name = "Shoko MyList Sync Plus";
+    public const string Name = "Shoko MyList Sync+";
 
     /// <summary>Description of the plugin.</summary>
     public const string Description = "Syncs Shoko's database state to AniDB's MyList by verifying it against a xml-cdb MyList Export.";

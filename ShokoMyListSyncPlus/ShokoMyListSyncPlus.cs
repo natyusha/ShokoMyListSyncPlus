@@ -19,6 +19,9 @@ public class Plugin : IPlugin
     public string Description => ShokoMyListSyncPlusConstants.Description;
 
     /// <inheritdoc/>
+    public string? EmbeddedThumbnailResourceName => "ShokoMyListSyncPlus.Assets.shoko-mylist-sync-plus-logo.png";
+
+    /// <inheritdoc/>
     public IReadOnlyList<PluginPage> GetPages() => [new PluginPage { Name = "Dashboard", Url = $"{ShokoMyListSyncPlusConstants.BasePath}/dashboard" }];
 }
 

@@ -317,7 +317,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
         try
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Shoko MyList Sync Plus Report - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            sb.AppendLine($"Shoko MyList Sync+ Report - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             sb.AppendLine(new string('-', 60));
             sb.AppendLine();
             sb.AppendLine($"  Elapsed Time             : {elapsed.TotalSeconds:F2}s");

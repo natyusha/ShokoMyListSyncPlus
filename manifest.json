@@ -1,6 +1,6 @@
 {
   "id": "f4d3c2b1-a9e8-7f6d-5c4b-3a2b1c0d9e8f",
-  "name": "Shoko MyList Sync Plus",
+  "name": "Shoko MyList Sync+",
   "overview": "Syncs Shoko's database state to AniDB's MyList by verifying it against a xml-cdb MyList Export.",
   "authors": "natyusha",
   "repository_url": "https://github.com/natyusha/ShokoMyListSyncPlus",
@@ -9,7 +9,7 @@
     "hosted-service",
     "mylist"
   ],
-  "image_url": null,
+  "image_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo.png",
   "releases": [
     {
       "version": "1.0.1",

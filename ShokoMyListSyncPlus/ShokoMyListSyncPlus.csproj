@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Shoko MyList Sync Plus</Title>
+    <Title>Shoko MyList Sync+</Title>
     <Authors>natyusha</Authors>
     <VersionRegex>Version\s*=\s*"([^"]+)"</VersionRegex>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
@@ -32,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\shoko-mylist-sync-plus-logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Dashboard\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>dashboard\%(RecursiveDir)%(Filename)%(Extension)</Link>
