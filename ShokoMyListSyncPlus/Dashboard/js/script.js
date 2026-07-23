@@ -3,6 +3,7 @@
  * @description Frontend logic for the Shoko MyList Sync Plus dashboard UI.
  */
 (() => {
+  // #region MARK: Setup & State
   const el = (id) => document.getElementById(id);
   const dropZone = el("drop-zone");
   const fileInput = el("file-input");
@@ -20,7 +21,9 @@
     apiKeyInput.value = localStorage.getItem("mylist-sync-apikey") || "";
     apiKeyInput.onchange = () => localStorage.setItem("mylist-sync-apikey", apiKeyInput.value.trim());
   }
+  // #endregion
 
+  // #region MARK: Helpers
   /**
    * Toggles a button's loading state with a spinner overlay.
    * @param {HTMLElement} btn - The button to modify.
@@ -41,6 +44,30 @@
     }
   }
 
+  /**
+   * Appends a message to the real-time UI log area and scrolls to the bottom.
+   * @param {string} msg - The log message text.
+   * @returns {void}
+   */
+  function log(msg) {
+    logArea.textContent += msg + "\n";
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+
+  /**
+   * Validates and accepts the dropped or selected file.
+   * @param {File} file - The file to process.
+   * @returns {void}
+   */
+  function handleFile(file) {
+    selectedFile = file;
+    el("file-name").textContent = file.name;
+    startBtn.disabled = false;
+    reportLinkContainer.style.display = "none";
+  }
+  // #endregion
+
+  // #region MARK: Drag & Drop
   dropZone.onclick = () => fileInput.click();
 
   dropZone.ondragover = (e) => {
@@ -59,29 +86,9 @@
   fileInput.onchange = (e) => {
     if (e.target.files.length) handleFile(e.target.files[0]);
   };
+  // #endregion
 
-  /**
-   * Validates and accepts the dropped or selected file.
-   * @param {File} file - The file to process.
-   * @returns {void}
-   */
-  function handleFile(file) {
-    selectedFile = file;
-    el("file-name").textContent = file.name;
-    startBtn.disabled = false;
-    reportLinkContainer.style.display = "none";
-  }
-
-  /**
-   * Appends a message to the real-time UI log area and scrolls to the bottom.
-   * @param {string} msg - The log message text.
-   * @returns {void}
-   */
-  function log(msg) {
-    logArea.textContent += msg + "\n";
-    logArea.scrollTop = logArea.scrollHeight;
-  }
-
+  // #region MARK: Status Polling
   /**
    * Polls the server API for current sync status and updates the UI counters.
    * @returns {Promise<void>}
@@ -124,7 +131,9 @@
       console.error("Poll error", err);
     }
   }
+  // #endregion
 
+  // #region MARK: Event Handlers
   startBtn.onclick = async () => {
     if (!selectedFile) return;
     const dryRun = el("dry-run").checked;
@@ -158,4 +167,5 @@
       setButtonLoading(startBtn, false);
     }
   };
+  // #endregion
 })();

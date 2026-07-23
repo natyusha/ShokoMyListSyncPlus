@@ -350,7 +350,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
 
             string filename = "mylist-sync-report.log";
             File.WriteAllText(Path.Combine(logsDir, filename), sb.ToString());
-            State.LastReportUrl = $"/api/plugin/ShokoMyListSyncPlus/logs/{filename}";
+            State.LastReportUrl = $"{ShokoMyListSyncPlusConstants.BasePath}/logs/{filename}";
         }
         catch (Exception ex)
         {

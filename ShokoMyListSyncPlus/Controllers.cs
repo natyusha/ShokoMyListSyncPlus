@@ -6,10 +6,12 @@ using NLog;
 
 namespace ShokoMyListSyncPlus;
 
+#region Dashboard
+
 /// <summary>Serves the single-page dashboard UI and its static assets.</summary>
 [ApiController]
-[ApiVersion("1")]
-[Route("/api/plugin/ShokoMyListSyncPlus")]
+[ApiVersion(ShokoMyListSyncPlusConstants.ApiVersion)]
+[Route(ShokoMyListSyncPlusConstants.BasePath)]
 public class DashboardController : ControllerBase
 {
     /// <summary>Returns the physical CSHTML dashboard.</summary>
@@ -54,10 +56,14 @@ public class DashboardController : ControllerBase
     }
 }
 
+#endregion
+
+#region Sync Operations
+
 /// <summary>Provides the API endpoints to manage the background sync process and retrieve logs.</summary>
 [ApiController]
-[ApiVersion("1")]
-[Route("/api/plugin/ShokoMyListSyncPlus")]
+[ApiVersion(ShokoMyListSyncPlusConstants.ApiVersion)]
+[Route(ShokoMyListSyncPlusConstants.BasePath)]
 public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
 {
     private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
@@ -154,3 +160,5 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
         return Ok("Sync started.");
     }
 }
+
+#endregion

@@ -251,6 +251,52 @@ button:disabled:hover {
 }
 /* #endregion */
 
+/* #region MARK: Floating Links
+*/
+.floating-actions {
+  display: flex;
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+.floating-actions .icon-svg,
+.floating-actions .at-svg {
+  fill: currentColor;
+}
+.float-link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  width: 40px;
+  height: 40px;
+  color: var(--text-color);
+}
+button.float-link {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  color: var(--text-color);
+}
+.float-link:hover {
+  color: var(--hover-color);
+}
+.float-link.theme-toggle[aria-pressed="false"] {
+  color: var(--highlight-color);
+}
+/* #endregion */
+
 /* #region MARK: Plugin Specific Styles
 */
 #dashboard {
@@ -258,8 +304,7 @@ button:disabled:hover {
   max-width: 675px;
 }
 h1 {
-  margin: 0;
-  margin-left: 0.1em;
+  margin: 0 0 -0.2em 0.1em;
   color: var(--text-color);
   font-weight: normal;
   font-size: 3em;

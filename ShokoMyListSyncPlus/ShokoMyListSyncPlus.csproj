@@ -5,10 +5,23 @@
     <Nullable>enable</Nullable>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 
-    <Version>1.0.1</Version>
+  <PropertyGroup>
+    <Title>Shoko MyList Sync Plus</Title>
+    <Authors>natyusha</Authors>
+    <VersionRegex>Version\s*=\s*"([^"]+)"</VersionRegex>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <ShokoMyListSyncPlusConstantsFile>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/ShokoMyListSyncPlusConstants.cs'))</ShokoMyListSyncPlusConstantsFile>
+    <Version>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(VersionRegex)).Groups[1].Value)</Version>
+
+    <!-- Default to Stable (0) and If the Release Channel is Dev (set via GitHub Actions), use revision 1 to trigger Shoko's Dev Channel detection -->
+    <BuildRevision>0</BuildRevision>
+    <BuildRevision Condition="'$(RELEASE_CHANNEL)' == 'Dev'">1</BuildRevision>
+
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
+    <InformationalVersion Condition="'$(BuildRevision)' == '1'">$(Version)-dev.1</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

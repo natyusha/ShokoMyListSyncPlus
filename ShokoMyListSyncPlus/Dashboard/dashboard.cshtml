@@ -14,6 +14,8 @@
         <h1>SHOKO MYLIST SYNC PLUS</h1>
       </header>
 
+      <!-- #region MARK: Configuration
+      -->
       <section>
         <h2>
           <svg class="icon-svg"><use href="img/icons.svg#cog-outline"></use></svg>
@@ -23,10 +25,8 @@
           <label for="api-key" title="Shoko API Key">Shoko API Key:</label>
           <input id="api-key" type="text" placeholder="Shoko API Key" />
         </div>
-
         <div id="drop-zone">Drag and drop your <b>xml-cdb</b> export (<b>.xml</b> or <b>.tgz</b>) here<br />or click to browse<br /><small id="file-name"></small></div>
         <input type="file" id="file-input" style="display: none" accept=".xml,.tgz" />
-
         <div class="full">
           <button id="start-sync" disabled>Start MyList Sync</button>
           <label class="shoko-checkbox">
@@ -42,7 +42,10 @@
           </label>
         </div>
       </section>
+      <!-- #endregion -->
 
+      <!-- #region MARK: Status Log
+      -->
       <section>
         <div class="status-header">
           <h2>
@@ -51,7 +54,6 @@
           </h2>
           <div id="report-link-container" style="display: none">[<a id="report-link" href="#" target="_blank" class="log-link">view log</a>]</div>
         </div>
-
         <div class="stats">
           <div>Missing: <span id="stat-missing">0</span></div>
           <div>Out-of-Sync: <span id="stat-out-of-sync">0</span></div>
@@ -61,6 +63,22 @@
         <div id="log-area"></div>
       </section>
     </div>
+    <!-- #endregion -->
+
+    <!-- #region MARK: Floating Links
+    -->
+    <div class="floating-actions" role="navigation" aria-label="Quick links">
+      <a class="float-link" href="https://discord.gg/shokoanime" title="Discord" aria-label="Shoko Discord">
+        <svg class="icon-svg"><use href="img/icons.svg#discord"></use></svg>
+      </a>
+      <a class="float-link" href="https://docs.shokoanime.com/" title="Shoko Docs" aria-label="Shoko Docs">
+        <svg class="icon-svg"><use href="img/icons.svg#docs"></use></svg>
+      </a>
+      <a class="float-link github-float" href="https://github.com/natyusha/ShokoMyListSyncPlus" title="Github" aria-label="Shoko MyList Sync Plus on GitHub">
+        <svg class="icon-svg"><use href="img/icons.svg#github"></use></svg>
+      </a>
+    </div>
+    <!-- #endregion -->
 
     <script src="js/script.js"></script>
   </body>
