@@ -12,6 +12,34 @@
   "image_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo.png",
   "releases": [
     {
+      "version": "1.0.2",
+      "tag": "v1.0.2",
+      "source_revision": "9ef0db52db7df871d1024168782dd4951a543b38",
+      "released_at": "2026-07-23T08:57:06Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Add Constants File, More Code Regions & Floating Dashboard Links\r\n- Implement Tooltip Engine In Dashboard\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v1.0.1...v1.0.2",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_linux-arm64.zip",
+          "checksum": "647fe9109629b59a13bdcf90c5a4e64600b0903900b8fb26bfe989a0c24af717"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_linux-x64.zip",
+          "checksum": "85078cf384f122acd97e90e2d35082665ec3ce3031e5939b65aaebfd0e37cd84"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_win-x64.zip",
+          "checksum": "50cb8d546123435af99da64d0e1e7c6be5951069f33652da6bbe818d47f6a3c1"
+        }
+      ]
+    },
+    {
       "version": "1.0.1",
       "tag": "v1.0.1",
       "source_revision": "3e30c79716a16967f23d1d039d217593f3a85538",
