@@ -19,8 +19,8 @@ Installation can be completed via Shoko's WebUI (Recommended) or Manually. Both 
 - **WebUI** (Recommended)
   - Open Shoko's WebUI and navigate to: `Settings > Plugin Management > Repositories`
   - Click `Add Repository` and configure the following:
-    - Name: `Shoko MyList Sync+`
-    - Manifest URL: `https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/manifest.json`
+    - Name: `NN Plugins`
+    - Manifest URL: `https://raw.githubusercontent.com/natyusha/ShokoPluginManifest/master/manifest.json`
   - Go to `Settings > Plugin Management > Browse` and find "Shoko MyList Sync+"
   - Click `Install`
 - **Manual**
