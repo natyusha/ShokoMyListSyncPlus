@@ -12,6 +12,34 @@
   "image_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo.png",
   "releases": [
     {
+      "version": "1.0.3",
+      "tag": "v1.0.3",
+      "source_revision": "2c26f39ed2153edb4805dd21d255960c4802512f",
+      "released_at": "2026-07-24T20:58:29Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Fix Network Error When Uploading Large XML Files\r\n- Switch README.md to 'NN Plugins' master manifest\r\n- Bump Shoko.Abstractions to v6.0.0-alpha.76\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v1.0.2...v1.0.3",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_linux-arm64.zip",
+          "checksum": "099dd5079005343e1400e2acbc6effa9a5ba9879812d38bd813eaf09f7788b0c"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_linux-x64.zip",
+          "checksum": "990810920f0799d09abd63d05c299ec27e73272d05a39fdcdedd4b1aaf8b351e"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_win-x64.zip",
+          "checksum": "d0172f8a97f9d0b02285d4b6f2229738ff6067c586fe3d9401ae7b29de042ea5"
+        }
+      ]
+    },
+    {
       "version": "1.0.2",
       "tag": "v1.0.2",
       "source_revision": "9ef0db52db7df871d1024168782dd4951a543b38",
