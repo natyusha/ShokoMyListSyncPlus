@@ -119,6 +119,8 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
     /// <param name="apiKey">The Shoko v3 API Key used to authenticate the file addition calls.</param>
     /// <returns>A status acknowledgment.</returns>
     [HttpPost("sync")]
+    [DisableRequestSizeLimit]
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public async Task<IActionResult> StartSync([FromForm] IFormFile exportFile, [FromForm] bool dryRun, [FromForm] string apiKey)
     {
         if (worker.State.IsRunning)

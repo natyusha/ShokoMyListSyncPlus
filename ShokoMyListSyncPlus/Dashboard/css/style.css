@@ -395,7 +395,7 @@ label.shoko-checkbox {
 #file-name {
   display: block;
   margin-top: 10px;
-  color: var(--highlight-color);
+  color: var(--ok-color);
 }
 #log-area {
   border: 1px solid var(--border-color);
