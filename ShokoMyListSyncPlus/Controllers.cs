@@ -94,7 +94,7 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
 
     /// <summary>Serves report files from the plugin's logs directory.</summary>
     /// <param name="fileName">The log filename.</param>
-    /// <returns>The log content as text/plain.</returns>
+    /// <returns>The log content as text/plain; charset=utf-8.</returns>
     [HttpGet("logs/{fileName}")]
     public IActionResult GetLog(string fileName)
     {
@@ -110,7 +110,7 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
         Response.Headers["Pragma"] = "no-cache";
         Response.Headers["Expires"] = "0";
 
-        return PhysicalFile(path, "text/plain");
+        return PhysicalFile(path, "text/plain; charset=utf-8");
     }
 
     /// <summary>Accepts an XML or TGZ payload, buffers it, and begins the background synchronization task.</summary>
