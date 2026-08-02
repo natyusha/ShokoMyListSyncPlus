@@ -12,6 +12,34 @@
   "image_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-logo.png",
   "releases": [
     {
+      "version": "1.0.4",
+      "tag": "v1.0.4",
+      "source_revision": "9067493f2fef44ef9eb90282d13de4d94ca2cca3",
+      "released_at": "2026-08-02T12:47:40Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Update GetLog endpoint in Controllers.cs to serve text/plain; charset=utf-8\r\n- Bump Shoko.Abstractions to 6.0.0-alpha.77\r\n- Bump NLog to v6.1.4\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v1.0.3...v1.0.4",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_linux-arm64.zip",
+          "checksum": "4fb0202659157630908cc6445fbd3f9267013df19714a0ad2da629a2624aa359"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_linux-x64.zip",
+          "checksum": "1ebff58a956cfea9c4fd9d64e4c925b4069d48588ca49275568bc449bb2d2fef"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_win-x64.zip",
+          "checksum": "0dd904fc6f7a02fa98fc9c5945eb35bc2063f8f3499a0e1d365b1660b7fb81c8"
+        }
+      ]
+    },
+    {
       "version": "1.0.3",
       "tag": "v1.0.3",
       "source_revision": "2c26f39ed2153edb4805dd21d255960c4802512f",
