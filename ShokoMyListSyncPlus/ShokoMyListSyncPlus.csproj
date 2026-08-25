@@ -3,26 +3,42 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <RepositoryUrl>https://github.com/natyusha/ShokoMyListSyncPlus</RepositoryUrl>
+    <PackageTags>anidb, hosted-service, mylist, sync</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <PropertyGroup>
     <Title>Shoko MyList Sync+</Title>
     <Authors>natyusha</Authors>
+
     <VersionRegex>Version\s*=\s*"([^"]+)"</VersionRegex>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <ShokoMyListSyncPlusConstantsFile>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/ShokoMyListSyncPlusConstants.cs'))</ShokoMyListSyncPlusConstantsFile>
     <Version>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(VersionRegex)).Groups[1].Value)</Version>
 
+    <ReleaseChannel Condition="'$(RELEASE_CHANNEL)' != ''">$(RELEASE_CHANNEL)</ReleaseChannel>
+    <ReleaseChannel Condition="'$(RELEASE_CHANNEL)' == ''">Dev</ReleaseChannel>
+
     <!-- Default to Stable (0) and If the Release Channel is Dev (set via GitHub Actions), use revision 1 to trigger Shoko's Dev Channel detection -->
     <BuildRevision>0</BuildRevision>
-    <BuildRevision Condition="'$(RELEASE_CHANNEL)' == 'Dev'">1</BuildRevision>
+    <BuildRevision Condition="'$(ReleaseChannel)' == 'Dev'">1</BuildRevision>
 
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
     <InformationalVersion Condition="'$(BuildRevision)' == '1'">$(Version)-dev.1</InformationalVersion>
   </PropertyGroup>
+
+  <!-- Embed Identity Metadata manually to satisfy Shoko Server's pre-load checks -->
+  <ItemGroup>
+    <AssemblyMetadata Include="PackageID" Value="f4d3c2b1-a9e8-7f6d-5c4b-3a2b1c0d9e8f" />
+    <AssemblyMetadata Include="PackageName" Value="$(Title)" />
+    <AssemblyMetadata Include="PackageOverview" Value="Syncs Shoko's database state to AniDB's MyList by verifying it against a xml-cdb MyList Export." />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" ExcludeAssets="runtime" />
@@ -31,6 +47,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <!-- Embed the plugin logo for Shoko's WebUI and preserve dashboard static assets in the output directory -->
   <ItemGroup>
     <EmbeddedResource Include="Assets\shoko-mylist-sync-plus-logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -66,7 +83,7 @@
     </PropertyGroup>
     <ItemGroup>
       <AssemblyMetadata Include="RuntimeIdentifier" Value="$(RuntimeIdentifier)" Condition="'$(RuntimeIdentifier)' != ''" />
-      <AssemblyMetadata Include="ReleaseChannel" Value="$(RELEASE_CHANNEL)" Condition="'$(RELEASE_CHANNEL)' != ''" />
+      <AssemblyMetadata Include="ReleaseChannel" Value="$(ReleaseChannel)" />
       <AssemblyMetadata Include="ReleaseDate" Value="$(ReleaseDate)" Condition="'$(ReleaseDate)' != ''" />
       <AssemblyMetadata Include="ReleaseTag" Value="$(ReleaseTag)" Condition="'$(ReleaseTag)' != ''" />
       <AssemblyMetadata Include="SourceRevision" Value="$(SourceRevision)" Condition="'$(SourceRevision)' != ''" />
