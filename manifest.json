@@ -1,10 +1,10 @@
 {
+  "$schema": "https://raw.githubusercontent.com/ShokoAnime/ShokoServer/master/Shoko.BuildTools/manifest.schema.json",
   "id": "f4d3c2b1-a9e8-7f6d-5c4b-3a2b1c0d9e8f",
   "name": "Shoko MyList Sync+",
   "overview": "Syncs Shoko's database state to AniDB's MyList by verifying it against a xml-cdb MyList Export.",
   "authors": "natyusha",
   "repository_url": "https://github.com/natyusha/ShokoMyListSyncPlus",
-  "homepage_url": null,
   "tags": [
     "hosted-service",
     "mylist"
@@ -23,19 +23,19 @@
           "runtime": "linux-arm64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_linux-arm64.zip",
-          "checksum": "4fb0202659157630908cc6445fbd3f9267013df19714a0ad2da629a2624aa359"
+          "checksum": "sha256:4fb0202659157630908cc6445fbd3f9267013df19714a0ad2da629a2624aa359"
         },
         {
           "runtime": "linux-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_linux-x64.zip",
-          "checksum": "1ebff58a956cfea9c4fd9d64e4c925b4069d48588ca49275568bc449bb2d2fef"
+          "checksum": "sha256:1ebff58a956cfea9c4fd9d64e4c925b4069d48588ca49275568bc449bb2d2fef"
         },
         {
           "runtime": "win-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.4/ShokoMyListSyncPlus-v1.0.4_win-x64.zip",
-          "checksum": "0dd904fc6f7a02fa98fc9c5945eb35bc2063f8f3499a0e1d365b1660b7fb81c8"
+          "checksum": "sha256:0dd904fc6f7a02fa98fc9c5945eb35bc2063f8f3499a0e1d365b1660b7fb81c8"
         }
       ]
     },
@@ -51,19 +51,19 @@
           "runtime": "linux-arm64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_linux-arm64.zip",
-          "checksum": "099dd5079005343e1400e2acbc6effa9a5ba9879812d38bd813eaf09f7788b0c"
+          "checksum": "sha256:099dd5079005343e1400e2acbc6effa9a5ba9879812d38bd813eaf09f7788b0c"
         },
         {
           "runtime": "linux-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_linux-x64.zip",
-          "checksum": "990810920f0799d09abd63d05c299ec27e73272d05a39fdcdedd4b1aaf8b351e"
+          "checksum": "sha256:990810920f0799d09abd63d05c299ec27e73272d05a39fdcdedd4b1aaf8b351e"
         },
         {
           "runtime": "win-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.3/ShokoMyListSyncPlus-v1.0.3_win-x64.zip",
-          "checksum": "d0172f8a97f9d0b02285d4b6f2229738ff6067c586fe3d9401ae7b29de042ea5"
+          "checksum": "sha256:d0172f8a97f9d0b02285d4b6f2229738ff6067c586fe3d9401ae7b29de042ea5"
         }
       ]
     },
@@ -79,19 +79,19 @@
           "runtime": "linux-arm64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_linux-arm64.zip",
-          "checksum": "647fe9109629b59a13bdcf90c5a4e64600b0903900b8fb26bfe989a0c24af717"
+          "checksum": "sha256:647fe9109629b59a13bdcf90c5a4e64600b0903900b8fb26bfe989a0c24af717"
         },
         {
           "runtime": "linux-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_linux-x64.zip",
-          "checksum": "85078cf384f122acd97e90e2d35082665ec3ce3031e5939b65aaebfd0e37cd84"
+          "checksum": "sha256:85078cf384f122acd97e90e2d35082665ec3ce3031e5939b65aaebfd0e37cd84"
         },
         {
           "runtime": "win-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.2/ShokoMyListSyncPlus-v1.0.2_win-x64.zip",
-          "checksum": "50cb8d546123435af99da64d0e1e7c6be5951069f33652da6bbe818d47f6a3c1"
+          "checksum": "sha256:50cb8d546123435af99da64d0e1e7c6be5951069f33652da6bbe818d47f6a3c1"
         }
       ]
     },
@@ -107,47 +107,19 @@
           "runtime": "linux-arm64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_linux-arm64.zip",
-          "checksum": "c44f08a14c10795d52823f8c68bd04f1e091a1e8900dceca1627ab8ba1148543"
+          "checksum": "sha256:c44f08a14c10795d52823f8c68bd04f1e091a1e8900dceca1627ab8ba1148543"
         },
         {
           "runtime": "linux-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_linux-x64.zip",
-          "checksum": "3329c0e11f06bf80b460e350e5d67ade784cde67bf5b70506730c19a19a9d27e"
+          "checksum": "sha256:3329c0e11f06bf80b460e350e5d67ade784cde67bf5b70506730c19a19a9d27e"
         },
         {
           "runtime": "win-x64",
           "abstraction": "6.0.0",
           "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.1/ShokoMyListSyncPlus-v1.0.1_win-x64.zip",
-          "checksum": "4bd49a78d857c070312a4cf75b26d611ed73dece1babb82a7538f0964b58b043"
-        }
-      ]
-    },
-    {
-      "version": "1.0.0",
-      "tag": "v1.0.0",
-      "source_revision": "f79708a75e1e729e64fc3a21779fc3a64acd20e2",
-      "released_at": "2026-07-21T06:43:20Z",
-      "channel": "Stable",
-      "release_notes": "The third initial release attempt due to a malformed workflow.",
-      "archives": [
-        {
-          "runtime": "linux-arm64",
-          "abstraction": "6.0.0",
-          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_linux-arm64.zip",
-          "checksum": "d852dfb79f119e1527fcb48ed6e6a0c80e1cf42d33d4d8bc869c2b6623c8d0d4"
-        },
-        {
-          "runtime": "linux-x64",
-          "abstraction": "6.0.0",
-          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_linux-x64.zip",
-          "checksum": "94f5e34da8bc0fd30d106a7245c5238824dcf2d52679301a8760a9499b11922b"
-        },
-        {
-          "runtime": "win-x64",
-          "abstraction": "6.0.0",
-          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v1.0.0/ShokoMyListSyncPlus-v1.0.0_win-x64.zip",
-          "checksum": "c33676f98b88d57f95ebf10d825da98e5c6b2e2ccf3891d9d482b13c6754afff"
+          "checksum": "sha256:4bd49a78d857c070312a4cf75b26d611ed73dece1babb82a7538f0964b58b043"
         }
       ]
     }
