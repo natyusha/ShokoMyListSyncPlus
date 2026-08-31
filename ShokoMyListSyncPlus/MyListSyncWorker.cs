@@ -90,7 +90,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
 
             var options = new MylistSyncOptions
             {
-                PlanOnly = dryRun,
+                PlanOnly = true,
                 ReadWatched = import,
                 ReadUnwatched = import,
                 SetWatched = !import,
@@ -111,11 +111,11 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
             State.ProcessedEpisodes = result.TotalEntries;
             Log($"Scan complete. Evaluated {result.TotalEntries} entries against local database.");
 
-            foreach (var action in result.Plan.Actions)
-            {
-                if (action.Kind == MylistSyncActionKind.AlreadyInDesiredState)
-                    continue;
+            var targetDirection = import ? MylistSyncDirection.Import : MylistSyncDirection.Export;
+            var relevantActions = result.Plan.Actions.Where(a => a.Direction == targetDirection).ToList();
 
+            foreach (var action in relevantActions)
+            {
                 string prefix = action.Kind switch
                 {
                     MylistSyncActionKind.ExportEntryAddition => "[ADD]",
@@ -127,7 +127,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
 
                 if (action.Kind == MylistSyncActionKind.ExportEntryAddition)
                     State.MissingCount++;
-                else if (action.Kind is MylistSyncActionKind.ExportWatchedState or MylistSyncActionKind.ExportEntryRemoval or MylistSyncActionKind.ImportWatchedState)
+                else
                     State.OutOfSyncCount++;
 
                 // Resolve episode and series metadata from direct references, video cross-references, or AniDB lookups
@@ -166,15 +166,28 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
 
             if (!dryRun)
             {
-                State.EpisodesSynced = result.ModifiedEntries + result.FilesQueuedForAdd + result.EpisodesQueuedForAdd + result.EntriesQueuedForRemoval + result.EpisodesQueuedForRemoval;
-                Log(
-                    $"Sync completed successfully. Modified: {result.ModifiedEntries}, Added: {result.FilesQueuedForAdd + result.EpisodesQueuedForAdd}, Removed: {result.EntriesQueuedForRemoval + result.EpisodesQueuedForRemoval}"
-                );
+                if (relevantActions.Count > 0)
+                {
+                    var filteredPlan = new MylistSyncPlan { CreatedAt = result.Plan.CreatedAt, Actions = relevantActions };
+                    var appliedResult = await mylistService.ApplySyncPlanAsync(filteredPlan, ct).ConfigureAwait(false);
+
+                    if (appliedResult == null)
+                    {
+                        s_logger.Warn("MyListSync: Failed to apply sync plan. Another sync may be currently running.");
+                        Log("Fatal Error: Failed to apply sync plan. Another MyList sync is likely already running in Shoko.");
+                        return;
+                    }
+
+                    State.EpisodesSynced =
+                        appliedResult.ModifiedEntries + appliedResult.FilesQueuedForAdd + appliedResult.EpisodesQueuedForAdd + appliedResult.EntriesQueuedForRemoval + appliedResult.EpisodesQueuedForRemoval;
+                }
+
+                Log($"Sync completed successfully. Processed {relevantActions.Count} actions (Direction: {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}).");
                 s_logger.Info("MyListSync: Task completed successfully -> Synced {0} items.", State.EpisodesSynced);
             }
             else
             {
-                Log($"Dry Run completed. Would add {State.MissingCount} and sync {State.OutOfSyncCount} states.");
+                Log($"Dry Run completed. Would process {relevantActions.Count} actions (Direction: {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}).");
                 s_logger.Info("MyListSync: Task completed successfully (Dry Run).");
             }
         }
@@ -216,7 +229,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
             sb.AppendLine($"  Elapsed Time             : {elapsed.TotalSeconds:F2}s");
             sb.AppendLine($"  Mode                     : {(State.DryRun ? "Dry Run" : "Live")}");
             sb.AppendLine($"  Direction                : {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}");
-            sb.AppendLine($"  Update Storage States    : {(updateStates ? "Enabled" : "Disabled")}");
+            sb.AppendLine($"  Update Storage States    : {(import ? "N/A (Import Mode)" : (updateStates ? "Enabled" : "Disabled"))}");
             sb.AppendLine($"  Missing Items Found      : {State.MissingCount}");
             sb.AppendLine($"  Out-of-Sync Items        : {State.OutOfSyncCount}");
             sb.AppendLine($"  Items Synced             : {State.EpisodesSynced}");
