@@ -10,11 +10,26 @@
   const logArea = el("log-area");
   const reportLinkContainer = el("report-link-container");
   const reportLink = el("report-link");
+  const dirToggle = el("sync-direction-toggle");
+  const dirArrow = el("sync-direction-arrow");
 
   let pollTimer = null;
+  let dirImport = localStorage.getItem("mylist-sync-direction") === "import";
   // #endregion
 
   // #region Helpers
+  /**
+   * Updates the UI arrow and state based on the direction toggle.
+   * @returns {void}
+   */
+  const updateDir = () => {
+    if (!dirToggle || !dirArrow) return;
+    dirToggle.setAttribute("aria-pressed", String(dirImport));
+    dirArrow.querySelector(".dir-icon-right")?.classList.toggle("hidden", !dirImport);
+    dirArrow.querySelector(".dir-icon-left")?.classList.toggle("hidden", dirImport);
+  };
+  updateDir();
+
   /**
    * Toggles a button's loading state with a spinner overlay.
    * @param {HTMLElement} btn - The button to modify.
@@ -192,11 +207,21 @@
   // #endregion
 
   // #region Event Handlers
+  if (dirToggle) {
+    dirToggle.onclick = () => {
+      dirImport = !dirImport;
+      updateDir();
+      localStorage.setItem("mylist-sync-direction", dirImport ? "import" : "export");
+    };
+  }
+
   startBtn.onclick = async () => {
     const dryRun = el("dry-run").checked;
 
-    const fd = new FormData();
-    fd.append("dryRun", dryRun);
+    const ps = new URLSearchParams({
+      dryRun: dryRun,
+      import: dirImport,
+    });
 
     setButtonLoading(startBtn, true);
     reportLinkContainer.style.display = "none";
@@ -204,7 +229,7 @@
     log("Requesting sync start...");
 
     try {
-      const res = await fetch(`${base}/sync`, { method: "POST", body: fd });
+      const res = await fetch(`${base}/sync?${ps}`, { method: "POST" });
       if (!res.ok) {
         log("Error starting sync: " + (await res.text()));
         setButtonLoading(startBtn, false);

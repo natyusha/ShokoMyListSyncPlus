@@ -18,10 +18,11 @@ GET  /dashboard/{*path}                                        -> GetAssetFile
 ```text
 GET  /status                                                   -> GetStatus
 GET  /logs/{fileName}                                          -> GetLog
-POST /sync?dryRun={true|false}                                 -> StartSync
+POST /sync?dryRun={true|false}&import={true|false}             -> StartSync
 ```
 
 - `GetStatus` Retrieves the live sync statistics (counts, errors) and pops any pending log messages from the background queue.
 - `GetLog` Serves report files generated under the plugin's `logs` directory.
 - `StartSync` Accepts a form payload to begin the synchronization background task.
   - `dryRun` (default true) If true, the plugin will scan the MyList and evaluate its state generating a plan without triggering any actual changes on AniDB or locally.
+  - `import` (default false) If true, pulls watched states from AniDB into Shoko. If false, exports local database states to AniDB's MyList.

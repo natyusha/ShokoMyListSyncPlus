@@ -45,6 +45,19 @@
   </symbol>
   <!-- #endregion -->
 
+  <!-- #region MARK: Sync Direction
+  -->
+  <symbol id="transfer-right" viewBox="0 0 24 24">
+    <title>Sync to Shoko</title>
+    <path d="M3,8H5V16H3V8M7,8H9V16H7V8M11,8H13V16H11V8M15,19.25V4.75L22.25,12L15,19.25Z" />
+  </symbol>
+
+  <symbol id="transfer-left" viewBox="0 0 24 24">
+    <title>Sync to Plex</title>
+    <path d="M21,16H19V8H21V16M17,16H15V8H17V16M13,16H11V8H13V16M9,5V19L2,12L9,5Z" />
+  </symbol>
+  <!-- #endregion -->
+
   <!-- #region MARK: Floating Icons
   -->
   <symbol id="discord" viewBox="0 0 24 24">

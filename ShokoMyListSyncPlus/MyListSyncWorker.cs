@@ -58,9 +58,10 @@ public class MyListSyncWorker(IMylistService mylistService)
 
     /// <summary>Triggers Shoko's native IMylistService sync and generates a detailed report based on the executed actions or generated plan.</summary>
     /// <param name="dryRun">Whether to perform a dry run (plan-only).</param>
+    /// <param name="import">Whether to pull watched states from AniDB to Shoko (true), or push from Shoko to AniDB (false).</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>A task representing the background sync operation.</returns>
-    public async Task StartSyncAsync(bool dryRun, CancellationToken ct)
+    public async Task StartSyncAsync(bool dryRun, bool import, CancellationToken ct)
     {
         if (State.IsRunning)
             return;
@@ -77,16 +78,24 @@ public class MyListSyncWorker(IMylistService mylistService)
         State.Logs.Clear();
 
         var reportDetails = new List<string>();
-        var infoDetails = new List<string>();
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
-        s_logger.Info("MyListSync: Starting native sync task (DryRun: {0})", dryRun);
+        s_logger.Info("MyListSync: Starting native sync task (DryRun: {0}, Import: {1})", dryRun, import);
 
         try
         {
             Log("Fetching AniDB MyList and calculating sync plan...");
 
-            var options = new MylistSyncOptions { PlanOnly = dryRun };
+            var options = new MylistSyncOptions
+            {
+                PlanOnly = dryRun,
+                ReadWatched = import,
+                ReadUnwatched = import,
+                SetWatched = !import,
+                SetUnwatched = !import,
+                Targets = MylistSyncTargets.Videos,
+            };
+
             var result = await mylistService.SyncAsync(options, ct).ConfigureAwait(false);
 
             if (result == null)
@@ -108,16 +117,16 @@ public class MyListSyncWorker(IMylistService mylistService)
                 if (action.Kind == MylistSyncActionKind.ExportEntryAddition)
                 {
                     State.MissingCount++;
-                    prefix = "[MISSING]";
+                    prefix = "[ADD]";
                 }
                 else if (action.Kind is MylistSyncActionKind.ExportWatchedState or MylistSyncActionKind.ExportEntryRemoval)
                 {
                     State.OutOfSyncCount++;
-                    prefix = "[OUT OF SYNC]";
+                    prefix = "[EXPORT]";
                 }
                 else if (action.Kind == MylistSyncActionKind.ImportWatchedState)
                 {
-                    State.AniDbWatchedLocalUnwatchedCount++;
+                    State.OutOfSyncCount++;
                     prefix = "[IMPORT]";
                 }
                 else
@@ -128,10 +137,7 @@ public class MyListSyncWorker(IMylistService mylistService)
                 string title = action.ShokoEpisode?.Series?.PreferredTitle?.Value ?? action.Entry?.AnimeID.ToString() ?? "Unknown";
                 string desc = action.Description;
 
-                if (action.Kind == MylistSyncActionKind.ImportWatchedState)
-                    infoDetails.Add($"[{title}] {desc}");
-                else
-                    reportDetails.Add($"{prefix} [{title}] {desc}");
+                reportDetails.Add($"{prefix} [{title}] {desc}");
             }
 
             if (!dryRun)
@@ -144,7 +150,7 @@ public class MyListSyncWorker(IMylistService mylistService)
             }
             else
             {
-                Log($"Dry Run completed. Would modify {State.OutOfSyncCount}, add {State.MissingCount}, and import {State.AniDbWatchedLocalUnwatchedCount}.");
+                Log($"Dry Run completed. Would add {State.MissingCount} and sync {State.OutOfSyncCount} states.");
                 s_logger.Info("MyListSync: Task completed successfully (Dry Run).");
             }
         }
@@ -157,7 +163,7 @@ public class MyListSyncWorker(IMylistService mylistService)
         finally
         {
             sw.Stop();
-            GenerateReport(sw.Elapsed, reportDetails, infoDetails);
+            GenerateReport(sw.Elapsed, import, reportDetails);
             State.IsRunning = false;
         }
     }
@@ -172,9 +178,9 @@ public class MyListSyncWorker(IMylistService mylistService)
 
     /// <summary>Builds and saves a formatted text report of the sync operation to the logs directory.</summary>
     /// <param name="elapsed">Total time elapsed during the task.</param>
+    /// <param name="import">Whether the direction of the sync was pulling from AniDB to Shoko.</param>
     /// <param name="details">List of descriptive strings for each missing or out-of-sync entry.</param>
-    /// <param name="infoDetails">List of descriptive strings for items watched on AniDB but unwatched locally.</param>
-    private void GenerateReport(TimeSpan elapsed, List<string> details, List<string> infoDetails)
+    private void GenerateReport(TimeSpan elapsed, bool import, List<string> details)
     {
         try
         {
@@ -184,9 +190,9 @@ public class MyListSyncWorker(IMylistService mylistService)
             sb.AppendLine();
             sb.AppendLine($"  Elapsed Time             : {elapsed.TotalSeconds:F2}s");
             sb.AppendLine($"  Mode                     : {(State.DryRun ? "Dry Run" : "Live")}");
+            sb.AppendLine($"  Direction                : {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}");
             sb.AppendLine($"  Missing Items Found      : {State.MissingCount}");
             sb.AppendLine($"  Out-of-Sync Items        : {State.OutOfSyncCount}");
-            sb.AppendLine($"  AniDB Watched / Unwatched: {State.AniDbWatchedLocalUnwatchedCount}");
             sb.AppendLine($"  Items Synced             : {State.EpisodesSynced}");
             sb.AppendLine($"  Errors                   : {State.Errors}");
 
@@ -195,14 +201,6 @@ public class MyListSyncWorker(IMylistService mylistService)
                 sb.AppendLine();
                 sb.AppendLine("Out-of-Sync & Missing Items Details:");
                 foreach (var d in details.OrderBy(x => x))
-                    sb.AppendLine($"  {d}");
-            }
-
-            if (infoDetails.Count > 0)
-            {
-                sb.AppendLine();
-                sb.AppendLine("Items Watched on AniDB but Unwatched in Shoko (Informational):");
-                foreach (var d in infoDetails.OrderBy(x => x))
                     sb.AppendLine($"  {d}");
             }
 
