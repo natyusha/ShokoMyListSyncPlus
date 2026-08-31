@@ -6,22 +6,12 @@
   // #region Setup & State
   const base = location.pathname.split("/dashboard")[0];
   const el = (id) => document.getElementById(id);
-  const dropZone = el("drop-zone");
-  const fileInput = el("file-input");
   const startBtn = el("start-sync");
   const logArea = el("log-area");
   const reportLinkContainer = el("report-link-container");
   const reportLink = el("report-link");
-  const apiKeyInput = el("api-key");
 
-  let selectedFile = null;
   let pollTimer = null;
-
-  // Load and save the Shoko API Key in localStorage for convenience
-  if (apiKeyInput) {
-    apiKeyInput.value = localStorage.getItem("mylist-sync-apikey") || "";
-    apiKeyInput.onchange = () => localStorage.setItem("mylist-sync-apikey", apiKeyInput.value.trim());
-  }
   // #endregion
 
   // #region Helpers
@@ -53,18 +43,6 @@
   function log(msg) {
     logArea.textContent += msg + "\n";
     logArea.scrollTop = logArea.scrollHeight;
-  }
-
-  /**
-   * Validates and accepts the dropped or selected file.
-   * @param {File} file - The file to process.
-   * @returns {void}
-   */
-  function handleFile(file) {
-    selectedFile = file;
-    el("file-name").textContent = file.name;
-    startBtn.disabled = false;
-    reportLinkContainer.style.display = "none";
   }
   // #endregion
 
@@ -170,27 +148,6 @@
   }
   // #endregion
 
-  // #region Drag & Drop
-  dropZone.onclick = () => fileInput.click();
-
-  dropZone.ondragover = (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragover");
-  };
-
-  dropZone.ondragleave = () => dropZone.classList.remove("dragover");
-
-  dropZone.ondrop = (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
-    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-  };
-
-  fileInput.onchange = (e) => {
-    if (e.target.files.length) handleFile(e.target.files[0]);
-  };
-  // #endregion
-
   // #region Status Polling
   /**
    * Polls the server API for current sync status and updates the UI counters.
@@ -210,11 +167,9 @@
       const logs = data.Logs ?? data.logs ?? [];
       const reportUrl = data.LastReportUrl ?? data.lastReportUrl;
 
-      const total = missing + outOfSync;
-
       el("stat-missing").textContent = missing;
       el("stat-out-of-sync").textContent = outOfSync;
-      el("stat-processed").textContent = `${processed} / ${total}`;
+      el("stat-processed").textContent = `${processed}`;
       el("stat-errors").textContent = errors;
 
       if (logs.length) logs.forEach((l) => log(l));
@@ -238,24 +193,15 @@
 
   // #region Event Handlers
   startBtn.onclick = async () => {
-    if (!selectedFile) return;
     const dryRun = el("dry-run").checked;
-    const apiKey = apiKeyInput ? apiKeyInput.value.trim() : "";
-
-    if (!dryRun && !apiKey) {
-      log("Error: Shoko API Key is required for live sync.");
-      return;
-    }
 
     const fd = new FormData();
-    fd.append("exportFile", selectedFile);
     fd.append("dryRun", dryRun);
-    fd.append("apiKey", apiKey);
 
     setButtonLoading(startBtn, true);
     reportLinkContainer.style.display = "none";
     logArea.textContent = "";
-    log("Starting sync...");
+    log("Requesting sync start...");
 
     try {
       const res = await fetch(`${base}/sync`, { method: "POST", body: fd });

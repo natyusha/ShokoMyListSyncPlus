@@ -378,25 +378,6 @@ input:not([type="checkbox"]) {
 label.shoko-checkbox {
   margin-left: 2em;
 }
-#drop-zone {
-  transition: background 0.2s;
-  cursor: pointer;
-  margin: 15px 0;
-  border: 2px dashed var(--highlight-color);
-  border-radius: 8px;
-  background: var(--inset-color);
-  padding: 40px;
-  text-align: center;
-}
-#drop-zone:hover,
-#drop-zone.dragover {
-  background: color-mix(in srgb, var(--inset-color), white 5%);
-}
-#file-name {
-  display: block;
-  margin-top: 10px;
-  color: var(--ok-color);
-}
 #log-area {
   border: 1px solid var(--border-color);
   border-radius: 4px;

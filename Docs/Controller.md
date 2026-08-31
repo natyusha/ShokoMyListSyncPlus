@@ -18,12 +18,10 @@ GET  /dashboard/{*path}                                        -> GetAssetFile
 ```text
 GET  /status                                                   -> GetStatus
 GET  /logs/{fileName}                                          -> GetLog
-POST /sync                                                     -> StartSync
+POST /sync?dryRun={true|false}                                 -> StartSync
 ```
 
 - `GetStatus` Retrieves the live sync statistics (counts, errors) and pops any pending log messages from the background queue.
 - `GetLog` Serves report files generated under the plugin's `logs` directory.
-- `StartSync` Accepts a `multipart/form-data` payload to begin the synchronization background task.
-  - `exportFile` (Required): The uploaded `xml-cdb` .xml or .tgz file.
-  - `dryRun` (Optional bool): If `true`, the plugin will scan for missing/out-of-sync episodes and evaluate their state, but will not trigger any changes.
-  - `apiKey` (Required if dryRun is false): The Shoko v3 API Key used to authorize the `AddToMyList` file commands.
+- `StartSync` Accepts a form payload to begin the synchronization background task.
+  - `dryRun` (default true) If true, the plugin will scan the MyList and evaluate its state generating a plan without triggering any actual changes on AniDB or locally.

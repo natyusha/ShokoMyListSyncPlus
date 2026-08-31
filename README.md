@@ -8,9 +8,9 @@
 
 <!-- prettier-ignore-end -->
 
-This is a companion plugin for Shoko Server that syncs Shoko's database state to AniDB's MyList by verifying it against a `xml-cdb` MyList Export.
+This is a companion plugin for Shoko Server that syncs Shoko's database state to AniDB's MyList by verifying it against your AniDB MyList.
 
-For long-time Shoko Server users it is quite common for the AniDB MyList to become somewhat desynced from Shoko. To compound this issue, Shoko's built-in sync commands have no knowledge of the MyList state and will produce API calls for every single file. By taking an export of your current MyList, this plugin identifies any files indexed by Shoko that are not currently synced to your AniDB account. It then uses Shoko's internal queue to push the missing watched states, ratings, and file metadata directly to AniDB without any redundant API calls.
+For long-time Shoko Server users, it is quite common for the AniDB MyList to become somewhat desynced from Shoko. This plugin identifies any files or episodes indexed by Shoko that are not currently synced to your AniDB account, or whose watched states differ, and automatically syncs them via Shoko's internal MyList service.
 
 ## Installation
 
@@ -31,12 +31,6 @@ Installation can be completed via Shoko's WebUI (Recommended) or Manually. Both 
 
 ## Usage
 
-1. Navigate to `User Data > Export` in AniDB's navigation menu or go directly to: https://anidb.net/user/export
-2. Select **xml-cdb** as the template and click **Request Export**; save the `.tgz` file to your computer once the export is complete
-3. Navigate to the plugin's dashboard at `Settings > Shoko Mylist Sync+ > Dashboard` and enter a Shoko API Key (available at `Settings > API Keys`)
-4. Drag and drop the downloaded export file into the dashboard zone
-5. Click **Start MyList Sync** to begin. The logs will populate automatically as episodes are processed
-
-## TODO
-
-- Replace v3 API usage (`/api/v3/File/{file.ID}/AddToMyList`) with a Shoko.Abstractions implementation
+1. Navigate to the plugin's dashboard at `Settings > Plugins > Shoko MyList Sync+ > Dashboard`
+2. Uncheck **Dry Run** if you don't just want to see a preview of the potential changes to your MyList.
+3. Click **Start MyList Sync** to begin. The status log will populate automatically as the sync plan is processed

@@ -21,14 +21,8 @@
           <svg class="icon-svg"><use href="img/icons.svg#cog-outline"></use></svg>
           Configuration
         </h2>
-        <div>
-          <label for="api-key" title="Shoko API Key">Shoko API Key:</label>
-          <input id="api-key" type="text" placeholder="Shoko API Key" />
-        </div>
-        <div id="drop-zone">drag and drop your <b>xml-cdb</b> export (<b>.xml</b> or <b>.tgz</b>) here<br />or click to browse<br /><small id="file-name"></small></div>
-        <input type="file" id="file-input" style="display: none" accept=".xml,.tgz" />
-        <div class="full">
-          <button id="start-sync" disabled>Start MyList Sync</button>
+        <div class="full" style="margin-top: 20px">
+          <button id="start-sync">Start MyList Sync</button>
           <label class="shoko-checkbox">
             <input type="checkbox" id="dry-run" checked />
             <span class="shoko-checkbox-icon" aria-hidden="true">
@@ -37,7 +31,7 @@
             </span>
             <span class="shoko-checkbox-text">
               <span class="shoko-checkbox-title">Dry Run</span><br />
-              <small>Do not push data to MyList</small>
+              <small>Determine differences and do not push data</small>
             </span>
           </label>
         </div>

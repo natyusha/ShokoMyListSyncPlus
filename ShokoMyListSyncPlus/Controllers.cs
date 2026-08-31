@@ -1,6 +1,5 @@
 using System.Reflection;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 
@@ -113,51 +112,20 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
         return PhysicalFile(path, "text/plain; charset=utf-8");
     }
 
-    /// <summary>Accepts an XML or TGZ payload, buffers it, and begins the background synchronization task.</summary>
-    /// <param name="exportFile">The uploaded export file.</param>
-    /// <param name="dryRun">Whether to run in Dry Run mode.</param>
-    /// <param name="apiKey">The Shoko v3 API Key used to authenticate the file addition calls.</param>
+    /// <summary>Begins the background synchronization task natively through Shoko.</summary>
+    /// <param name="dryRun">Whether to run in Dry Run (Plan-Only) mode.</param>
     /// <returns>A status acknowledgment.</returns>
     [HttpPost("sync")]
-    [DisableRequestSizeLimit]
-    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-    public async Task<IActionResult> StartSync([FromForm] IFormFile exportFile, [FromForm] bool dryRun, [FromForm] string apiKey)
+    public IActionResult StartSync([FromForm] bool dryRun)
     {
         if (worker.State.IsRunning)
         {
             s_logger.Warn("MyListSync: Rejected sync request -> A sync task is already running.");
             return BadRequest("Sync is already running.");
         }
-        if (exportFile == null || exportFile.Length == 0)
-        {
-            s_logger.Warn("MyListSync: Rejected sync request -> No file provided.");
-            return BadRequest("Export file is required.");
-        }
 
-        if (!exportFile.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) && !exportFile.FileName.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase))
-        {
-            s_logger.Warn("MyListSync: Rejected sync request -> Invalid file format '{0}'.", exportFile.FileName);
-            return BadRequest("Export file must be an XML document or TGZ archive.");
-        }
-
-        if (!dryRun && string.IsNullOrWhiteSpace(apiKey))
-        {
-            s_logger.Warn("MyListSync: Rejected sync request -> API Key is required for live sync.");
-            return BadRequest("API Key is required for live sync.");
-        }
-
-        s_logger.Info("MyListSync: Accepted export file '{0}' ({1} bytes) -> Triggering background worker...", exportFile.FileName, exportFile.Length);
-
-        // Buffer the stream so it isn't disposed when the HTTP request ends
-        var ms = new MemoryStream();
-        await exportFile.CopyToAsync(ms).ConfigureAwait(false);
-        ms.Position = 0;
-
-        // Derive the server's local Base URL dynamically
-        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
-        var filename = exportFile.FileName;
-
-        _ = Task.Run(() => worker.StartSyncAsync(ms, filename, dryRun, apiKey ?? "", baseUrl, default));
+        s_logger.Info("MyListSync: Accepted sync request (DryRun: {0}) -> Triggering background worker...", dryRun);
+        _ = Task.Run(() => worker.StartSyncAsync(dryRun, default));
 
         return Ok("Sync started.");
     }

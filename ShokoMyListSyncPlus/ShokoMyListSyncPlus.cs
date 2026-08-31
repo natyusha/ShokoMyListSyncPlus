@@ -35,7 +35,6 @@ public class ServiceRegistration : IPluginServiceRegistration
     /// <inheritdoc/>
     public static void RegisterServices(IServiceCollection services, IApplicationPaths applicationPaths)
     {
-        services.AddHttpClient();
         services.AddSingleton<MyListSyncWorker>();
     }
 }
