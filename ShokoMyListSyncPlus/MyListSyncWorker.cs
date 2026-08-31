@@ -59,9 +59,10 @@ public class MyListSyncWorker(IMylistService mylistService)
     /// <summary>Triggers Shoko's native IMylistService sync and generates a detailed report based on the executed actions or generated plan.</summary>
     /// <param name="dryRun">Whether to perform a dry run (plan-only).</param>
     /// <param name="import">Whether to pull watched states from AniDB to Shoko (true), or push from Shoko to AniDB (false).</param>
+    /// <param name="updateStates">Whether to update the storage state of existing entries during export.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>A task representing the background sync operation.</returns>
-    public async Task StartSyncAsync(bool dryRun, bool import, CancellationToken ct)
+    public async Task StartSyncAsync(bool dryRun, bool import, bool updateStates, CancellationToken ct)
     {
         if (State.IsRunning)
             return;
@@ -80,7 +81,7 @@ public class MyListSyncWorker(IMylistService mylistService)
         var reportDetails = new List<string>();
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
-        s_logger.Info("MyListSync: Starting native sync task (DryRun: {0}, Import: {1})", dryRun, import);
+        s_logger.Info("MyListSync: Starting native sync task (DryRun: {0}, Import: {1}, UpdateStates: {2})", dryRun, import, updateStates);
 
         try
         {
@@ -93,6 +94,7 @@ public class MyListSyncWorker(IMylistService mylistService)
                 ReadUnwatched = import,
                 SetWatched = !import,
                 SetUnwatched = !import,
+                UpdateStates = !import && updateStates,
                 Targets = MylistSyncTargets.Videos,
             };
 
@@ -163,7 +165,7 @@ public class MyListSyncWorker(IMylistService mylistService)
         finally
         {
             sw.Stop();
-            GenerateReport(sw.Elapsed, import, reportDetails);
+            GenerateReport(sw.Elapsed, import, updateStates, reportDetails);
             State.IsRunning = false;
         }
     }
@@ -179,8 +181,9 @@ public class MyListSyncWorker(IMylistService mylistService)
     /// <summary>Builds and saves a formatted text report of the sync operation to the logs directory.</summary>
     /// <param name="elapsed">Total time elapsed during the task.</param>
     /// <param name="import">Whether the direction of the sync was pulling from AniDB to Shoko.</param>
+    /// <param name="updateStates">Whether storage state updates were enabled for the sync run.</param>
     /// <param name="details">List of descriptive strings for each missing or out-of-sync entry.</param>
-    private void GenerateReport(TimeSpan elapsed, bool import, List<string> details)
+    private void GenerateReport(TimeSpan elapsed, bool import, bool updateStates, List<string> details)
     {
         try
         {
@@ -191,6 +194,7 @@ public class MyListSyncWorker(IMylistService mylistService)
             sb.AppendLine($"  Elapsed Time             : {elapsed.TotalSeconds:F2}s");
             sb.AppendLine($"  Mode                     : {(State.DryRun ? "Dry Run" : "Live")}");
             sb.AppendLine($"  Direction                : {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}");
+            sb.AppendLine($"  Update Storage States    : {(updateStates ? "Enabled" : "Disabled")}");
             sb.AppendLine($"  Missing Items Found      : {State.MissingCount}");
             sb.AppendLine($"  Out-of-Sync Items        : {State.OutOfSyncCount}");
             sb.AppendLine($"  Items Synced             : {State.EpisodesSynced}");

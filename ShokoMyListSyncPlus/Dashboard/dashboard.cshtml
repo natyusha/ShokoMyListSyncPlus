@@ -15,14 +15,14 @@
       </header>
 
       <!-- #region MARK: Configuration
-    -->
+      -->
       <section>
         <h2>
           <svg class="icon-svg"><use href="img/icons.svg#cog-outline"></use></svg>
           Configuration
         </h2>
-        <div class="full" style="margin-top: 10px">
-          <label class="dir-label" style="margin-bottom: 0">Direction<small></small></label>
+        <div>
+          <label class="dir-label">Direction<small></small></label>
           <button id="sync-direction-toggle" class="direction-toggle" aria-pressed="false" title="Toggle Direction" aria-label="Direction: AniDB to Shoko">
             <span class="dir-label">AniDB</span>
             <span id="sync-direction-arrow" class="dir-chevron">
@@ -35,20 +35,22 @@
             </span>
             <span class="dir-label">Shoko</span>
           </button>
-        </div>
-        <div class="full">
-          <button id="start-sync">Start MyList Sync</button>
           <label class="shoko-checkbox">
-            <input type="checkbox" id="dry-run" checked />
+            <input type="checkbox" id="update-states" checked />
             <span class="shoko-checkbox-icon" aria-hidden="true">
               <svg class="unchecked"><use href="img/icons.svg#checkbox-blank-circle-outline"></use></svg>
               <svg class="checked"><use href="img/icons.svg#checkbox-marked-circle-outline"></use></svg>
             </span>
             <span class="shoko-checkbox-text">
-              <span class="shoko-checkbox-title">Dry Run</span><br />
-              <small>Determine differences and do not push data</small>
+              <span class="shoko-checkbox-title">Update States</span><br />
+              <small>Apply default storage state</small>
             </span>
           </label>
+        </div>
+        <hr />
+        <div class="full">
+          <button id="dry-run-sync" class="cancel" type="button">Dry Run</button>
+          <button id="start-sync" type="button">Start MyList Sync</button>
         </div>
       </section>
       <!-- #endregion -->
@@ -61,7 +63,7 @@
             <svg class="icon-svg"><use href="img/icons.svg#text-box-outline"></use></svg>
             Status Log
           </h2>
-          <div id="report-link-container" style="display: none">[<a id="report-link" href="#" target="_blank" class="log-link">view log</a>]</div>
+          <div id="report-link-container" hidden>[<a id="report-link" href="#" target="_blank" class="log-link">view log</a>]</div>
         </div>
         <div class="stats">
           <div>Missing: <span id="stat-missing">0</span></div>
@@ -71,8 +73,8 @@
         </div>
         <div id="log-area"></div>
       </section>
+      <!-- #endregion -->
     </div>
-    <!-- #endregion -->
 
     <!-- #region MARK: Floating Links
     -->

@@ -6,6 +6,7 @@
   // #region Setup & State
   const base = location.pathname.split("/dashboard")[0];
   const el = (id) => document.getElementById(id);
+  const dryRunBtn = el("dry-run-sync");
   const startBtn = el("start-sync");
   const logArea = el("log-area");
   const reportLinkContainer = el("report-link-container");
@@ -193,11 +194,12 @@
         clearInterval(pollTimer);
         pollTimer = null;
         setButtonLoading(startBtn, false);
+        setButtonLoading(dryRunBtn, false);
 
         // Show the report log link if generated
         if (reportUrl) {
           reportLink.href = reportUrl;
-          reportLinkContainer.style.display = "";
+          reportLinkContainer.hidden = false;
         }
       }
     } catch (err) {
@@ -215,32 +217,44 @@
     };
   }
 
-  startBtn.onclick = async () => {
-    const dryRun = el("dry-run").checked;
+  /**
+   * Triggers the synchronization API request and starts status polling.
+   * @param {boolean} dryRun - Whether to run in Dry Run (Plan-Only) mode.
+   * @returns {Promise<void>}
+   */
+  const triggerSync = async (dryRun) => {
+    const updateStates = el("update-states")?.checked ?? true;
 
     const ps = new URLSearchParams({
       dryRun: dryRun,
       import: dirImport,
+      updateStates: updateStates,
     });
 
     setButtonLoading(startBtn, true);
-    reportLinkContainer.style.display = "none";
+    setButtonLoading(dryRunBtn, true);
+    reportLinkContainer.hidden = true;
     logArea.textContent = "";
-    log("Requesting sync start...");
+    log(`Requesting ${dryRun ? "Dry Run" : "MyList"} sync start...`);
 
     try {
       const res = await fetch(`${base}/sync?${ps}`, { method: "POST" });
       if (!res.ok) {
         log("Error starting sync: " + (await res.text()));
         setButtonLoading(startBtn, false);
+        setButtonLoading(dryRunBtn, false);
         return;
       }
       pollTimer = setInterval(pollStatus, 1000);
     } catch (err) {
       log("Fetch error: " + err.message);
       setButtonLoading(startBtn, false);
+      setButtonLoading(dryRunBtn, false);
     }
   };
+
+  if (dryRunBtn) dryRunBtn.onclick = () => triggerSync(true);
+  if (startBtn) startBtn.onclick = () => triggerSync(false);
   // #endregion
 
   // #region Initialization

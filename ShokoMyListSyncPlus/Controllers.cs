@@ -115,9 +115,10 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
     /// <summary>Begins the background synchronization task natively through Shoko.</summary>
     /// <param name="dryRun">Whether to run in Dry Run (Plan-Only) mode.</param>
     /// <param name="import">Whether to pull watched states from AniDB (import) or push local states (export).</param>
+    /// <param name="updateStates">Whether to update existing MyList entries with the configured storage state.</param>
     /// <returns>A status acknowledgment.</returns>
     [HttpPost("sync")]
-    public IActionResult StartSync([FromQuery] bool dryRun = true, [FromQuery] bool import = false)
+    public IActionResult StartSync([FromQuery] bool dryRun = true, [FromQuery] bool import = false, [FromQuery] bool updateStates = true)
     {
         if (worker.State.IsRunning)
         {
@@ -125,8 +126,8 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
             return BadRequest("Sync is already running.");
         }
 
-        s_logger.Info("MyListSync: Accepted sync request (DryRun: {0}, Import: {1}) -> Triggering background worker...", dryRun, import);
-        _ = Task.Run(() => worker.StartSyncAsync(dryRun, import, default));
+        s_logger.Info("MyListSync: Accepted sync request (DryRun: {0}, Import: {1}, UpdateStates: {2}) -> Triggering background worker...", dryRun, import, updateStates);
+        _ = Task.Run(() => worker.StartSyncAsync(dryRun, import, updateStates, default));
 
         return Ok("Sync started.");
     }

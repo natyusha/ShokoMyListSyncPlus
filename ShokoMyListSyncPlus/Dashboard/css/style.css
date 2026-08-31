@@ -93,6 +93,13 @@ button {
   font-family: "Sora", sans-serif;
   text-align: center;
 }
+button.cancel {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+button.cancel:hover {
+  background: color-mix(in srgb, var(--bg-color), white 15%);
+}
 button:hover {
   background: var(--hover-color);
 }
@@ -119,6 +126,12 @@ label {
   display: inline-block;
   margin: 6px 0 2px;
   margin-right: 8px;
+}
+label > small::before {
+  margin: 0 0.6rem;
+  content: "❯";
+  color: var(--highlight-color);
+  font-weight: 900;
 }
 small {
   color: color-mix(in srgb, currentColor 60%, transparent);
@@ -425,10 +438,14 @@ h1 {
   font-family: "Iosevka NN Condensed Extralight", sans-serif;
   letter-spacing: -0.06em;
 }
+hr {
+  margin: 0 0 12px 0;
+}
 input:not([type="checkbox"]) {
   max-width: 22.2em;
 }
 label.shoko-checkbox {
+  vertical-align: -0.3em;
   margin-left: 2em;
 }
 #log-area {
@@ -464,5 +481,8 @@ label.shoko-checkbox {
 #report-link-container {
   font-weight: 500;
   font-size: 0.95em;
+}
+.direction-toggle {
+  width: 196px;
 }
 /* #endregion */

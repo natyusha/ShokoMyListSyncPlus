@@ -26,3 +26,4 @@ POST /sync?dryRun={true|false}&import={true|false}             -> StartSync
 - `StartSync` Accepts a form payload to begin the synchronization background task.
   - `dryRun` (default true) If true, the plugin will scan the MyList and evaluate its state generating a plan without triggering any actual changes on AniDB or locally.
   - `import` (default false) If true, pulls watched states from AniDB into Shoko. If false, exports local database states to AniDB's MyList.
+  - `updateStates` (default true) If true, updates existing MyList entries with the configured storage state during export.
