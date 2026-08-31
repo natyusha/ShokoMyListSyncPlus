@@ -5,6 +5,7 @@ using NLog;
 using Shoko.Abstractions.Metadata.Anidb.Enums;
 using Shoko.Abstractions.Metadata.Anidb.Models;
 using Shoko.Abstractions.Metadata.Anidb.Services;
+using Shoko.Abstractions.Metadata.Services;
 
 namespace ShokoMyListSyncPlus;
 
@@ -43,7 +44,7 @@ public class SyncState
 }
 
 /// <summary>Background worker responsible for orchestrating the native MyList sync and generating reports.</summary>
-public class MyListSyncWorker(IMylistService mylistService)
+public class MyListSyncWorker(IMylistService mylistService, IMetadataService metadataService)
 {
     #region Setup & State
 
@@ -115,31 +116,52 @@ public class MyListSyncWorker(IMylistService mylistService)
                 if (action.Kind == MylistSyncActionKind.AlreadyInDesiredState)
                     continue;
 
-                string prefix;
+                string prefix = action.Kind switch
+                {
+                    MylistSyncActionKind.ExportEntryAddition => "[ADD]",
+                    MylistSyncActionKind.ExportWatchedState => "[EXPORT]",
+                    MylistSyncActionKind.ImportWatchedState => "[IMPORT]",
+                    MylistSyncActionKind.ExportEntryRemoval => "[REMOVE]",
+                    _ => "[UPDATE]",
+                };
+
                 if (action.Kind == MylistSyncActionKind.ExportEntryAddition)
-                {
                     State.MissingCount++;
-                    prefix = "[ADD]";
-                }
-                else if (action.Kind is MylistSyncActionKind.ExportWatchedState or MylistSyncActionKind.ExportEntryRemoval)
-                {
+                else if (action.Kind is MylistSyncActionKind.ExportWatchedState or MylistSyncActionKind.ExportEntryRemoval or MylistSyncActionKind.ImportWatchedState)
                     State.OutOfSyncCount++;
-                    prefix = "[EXPORT]";
-                }
-                else if (action.Kind == MylistSyncActionKind.ImportWatchedState)
-                {
-                    State.OutOfSyncCount++;
-                    prefix = "[IMPORT]";
-                }
-                else
-                {
-                    prefix = "[UPDATE]";
-                }
 
-                string title = action.ShokoEpisode?.Series?.PreferredTitle?.Value ?? action.Entry?.AnimeID.ToString() ?? "Unknown";
-                string desc = action.Description;
+                // Resolve episode and series metadata from direct references, video cross-references, or AniDB lookups
+                var ep =
+                    action.ShokoEpisode
+                    ?? action.Video?.CrossReferences?.FirstOrDefault(cr => cr.ShokoEpisode != null)?.ShokoEpisode
+                    ?? (action.Entry?.EpisodeID > 0 ? metadataService.GetShokoEpisodeByAnidbID(action.Entry.EpisodeID) : null);
 
-                reportDetails.Add($"{prefix} [{title}] {desc}");
+                var series = ep?.Series ?? action.Video?.Series?.FirstOrDefault() ?? (action.Entry?.AnimeID > 0 ? metadataService.GetShokoSeriesByAnidbID(action.Entry.AnimeID) : null);
+
+                string? fileName = action.Video?.Files?.FirstOrDefault()?.Path is { } filePath && !string.IsNullOrWhiteSpace(filePath) ? Path.GetFileName(filePath) : action.Video?.EarliestKnownName;
+
+                string seriesTitle = series?.PreferredTitle?.Value ?? (!string.IsNullOrWhiteSpace(fileName) ? fileName : (action.Entry?.AnimeID > 0 ? $"AniDB: {action.Entry.AnimeID}" : "Unknown Series"));
+
+                string epCoords = ep != null ? $"S{ep.SeasonNumber:D2}E{ep.EpisodeNumber:D2} " : (action.Entry?.EpisodeID > 0 ? $"EpID {action.Entry.EpisodeID} " : "");
+
+                string fileInfo =
+                    action.Video != null ? $"(Video: {action.Video.ID})"
+                    : action.Entry?.FileID > 0 ? $"(File: {action.Entry.FileID})"
+                    : action.Entry?.MylistID > 0 ? $"(MyList ID: {action.Entry.MylistID})"
+                    : "";
+
+                string detail = action.Kind switch
+                {
+                    MylistSyncActionKind.ExportEntryAddition =>
+                        $"Add to MyList{(action.WatchedAt != null ? $" (Watched: {action.WatchedAt:yyyy-MM-dd})" : " (Unwatched)")}{(action.State != null ? $", State: {action.State}" : "")}",
+                    MylistSyncActionKind.ExportWatchedState =>
+                        $"Export watched state -> {(action.WatchedAt != null ? $"Watched ({action.WatchedAt:yyyy-MM-dd})" : "Unwatched")}{(action.State != null ? $", State: {action.State}" : "")}",
+                    MylistSyncActionKind.ImportWatchedState => $"Import watched state -> {(action.WatchedAt != null ? $"Watched ({action.WatchedAt:yyyy-MM-dd})" : "Unwatched")}",
+                    MylistSyncActionKind.ExportEntryRemoval => $"Remove from MyList (File not in library){(action.DeleteType != null ? $" [{action.DeleteType}]" : "")}",
+                    _ => action.Description,
+                };
+
+                reportDetails.Add($"{prefix} [{seriesTitle}] {epCoords}{fileInfo} -> {detail}".Replace("  ", " "));
             }
 
             if (!dryRun)
@@ -172,7 +194,7 @@ public class MyListSyncWorker(IMylistService mylistService)
 
     #endregion
 
-    #region Internal Helpers & Logging
+    #region Helpers & Logging
 
     /// <summary>Pushes a message to the real-time log queue.</summary>
     /// <param name="message">The text to log.</param>
