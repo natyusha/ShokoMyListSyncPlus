@@ -111,7 +111,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
             {
                 foreach (var ep in series.Episodes)
                 {
-                    if (ep.AnidbEpisodeID <= 0 || ep.VideoList?.Count == 0)
+                    if (ep.AnidbEpisodeID <= 0 || ep.Videos?.Count == 0)
                         continue;
 
                     var ud = userDataService.GetEpisodeUserData(ep, defaultUser);
@@ -194,7 +194,7 @@ public class MyListSyncWorker(IMetadataService metadataService, IUserDataService
                         // Step 1: Force add physical files to MyList using Shoko's v3 HTTP API (only if the episode is completely missing from MyList)
                         if (!onMyList)
                         {
-                            foreach (var file in ep.VideoList ?? [])
+                            foreach (var file in ep.Videos ?? [])
                             {
                                 using var req = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl.TrimEnd('/')}/api/v3/File/{file.ID}/AddToMyList");
                                 using var resp = await client!.SendAsync(req, ct).ConfigureAwait(false);
