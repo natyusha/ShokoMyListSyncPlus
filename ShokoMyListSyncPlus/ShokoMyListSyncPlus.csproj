@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RepositoryUrl>https://github.com/natyusha/ShokoMyListSyncPlus</RepositoryUrl>
-    <PackageTags>anidb, hosted-service, mylist, sync</PackageTags>
+    <PackageTags>hosted-service, mylist, sync</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -42,14 +42,14 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Shoko.Abstractions" Version="6.0.0-alpha.84" ExcludeAssets="runtime" />
+    <PackageReference Include="Shoko.Abstractions" Version="6.0.0-alpha.97" ExcludeAssets="runtime" />
     <PackageReference Include="NLog" Version="6.1.4" ExcludeAssets="runtime" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <!-- Embed the plugin logo for Shoko's WebUI and preserve dashboard static assets in the output directory -->
   <ItemGroup>
-    <EmbeddedResource Include="Assets\shoko-mylist-sync-plus-logo.png">
+    <EmbeddedResource Include="Assets\shoko-mylist-sync-plus-logo.png;Assets\shoko-mylist-sync-plus-icon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="Dashboard\**\*">
@@ -58,7 +58,7 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="PluginAssemblyVersion" BeforeTargets="GetAssemblyVersion;GenerateAssemblyInfo" Condition="Exists('../.git')">
+  <Target Name="PluginAssemblyVersion" BeforeTargets="GetAssemblyVersion;GenerateAssemblyInfo" Condition="Exists('../.git') And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup Condition="$(OS) == 'Windows_NT'">
       <GitDateFormat>%%aI</GitDateFormat>
       <NullStdErr>NUL</NullStdErr>
@@ -67,13 +67,13 @@
       <GitDateFormat>%aI</GitDateFormat>
       <NullStdErr>/dev/null</NullStdErr>
     </PropertyGroup>
-    <Exec Command="git log -1 --format=$(GitDateFormat)" ConsoleToMsBuild="true">
+    <Exec Command="git log -1 --format=$(GitDateFormat)" ConsoleToMsBuild="true" StandardOutputImportance="Low">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitAuthorDateRaw" />
     </Exec>
-    <Exec Command="git rev-parse HEAD" ConsoleToMsBuild="true">
+    <Exec Command="git rev-parse HEAD" ConsoleToMsBuild="true" StandardOutputImportance="Low">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitCommitRaw" />
     </Exec>
-    <Exec Command="git describe --exact-match --tags --match &quot;v[0-9]*.[0-9]*.[0-9]*&quot; 2>$(NullStdErr)" ConsoleToMsBuild="true" IgnoreExitCode="true">
+    <Exec Command="git describe --exact-match --tags --match &quot;v[0-9]*.[0-9]*.[0-9]*&quot; 2>$(NullStdErr)" ConsoleToMsBuild="true" StandardOutputImportance="Low" IgnoreExitCode="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitTagRaw" />
     </Exec>
     <PropertyGroup>
