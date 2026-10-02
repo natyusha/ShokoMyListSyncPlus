@@ -176,17 +176,13 @@
 
       // Support both PascalCase and camelCase depending on Shoko's global JSON serializer settings
       const isRunning = data.IsRunning ?? data.isRunning;
-      const missing = data.MissingCount ?? data.missingCount ?? 0;
-      const outOfSync = data.OutOfSyncCount ?? data.outOfSyncCount ?? 0;
-      const processed = data.ProcessedEpisodes ?? data.processedEpisodes ?? 0;
-      const errors = data.Errors ?? data.errors ?? 0;
       const logs = data.Logs ?? data.logs ?? [];
       const reportUrl = data.LastReportUrl ?? data.lastReportUrl;
 
-      el("stat-missing").textContent = missing;
-      el("stat-out-of-sync").textContent = outOfSync;
-      el("stat-processed").textContent = `${processed}`;
-      el("stat-errors").textContent = errors;
+      el("stat-missing").textContent = data.MissingCount ?? data.missingCount ?? 0;
+      el("stat-out-of-sync").textContent = data.OutOfSyncCount ?? data.outOfSyncCount ?? 0;
+      el("stat-processed").textContent = data.ProcessedEpisodes ?? data.processedEpisodes ?? 0;
+      el("stat-errors").textContent = data.Errors ?? data.errors ?? 0;
 
       if (logs.length) logs.forEach((l) => log(l));
 
@@ -223,13 +219,7 @@
    * @returns {Promise<void>}
    */
   const triggerSync = async (dryRun) => {
-    const updateStates = el("update-states")?.checked ?? true;
-
-    const ps = new URLSearchParams({
-      dryRun: dryRun,
-      import: dirImport,
-      updateStates: updateStates,
-    });
+    const ps = new URLSearchParams({ dryRun, import: dirImport, updateStates: el("update-states")?.checked ?? true });
 
     setButtonLoading(startBtn, true);
     setButtonLoading(dryRunBtn, true);

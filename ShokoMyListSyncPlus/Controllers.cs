@@ -1,7 +1,10 @@
+using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using IOFile = System.IO.File;
 
 namespace ShokoMyListSyncPlus;
 
@@ -13,15 +16,33 @@ namespace ShokoMyListSyncPlus;
 [Route(ShokoMyListSyncPlusConstants.BasePath)]
 public class DashboardController : ControllerBase
 {
-    /// <summary>Returns the physical CSHTML dashboard.</summary>
-    /// <returns>HTML content.</returns>
-    [HttpGet("dashboard")]
-    public IActionResult GetDashboard()
-    {
-        string pluginDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-        string path = Path.Combine(pluginDir, "dashboard", "dashboard.cshtml");
+    private static readonly string s_dashboardDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "dashboard");
 
-        return !System.IO.File.Exists(path) ? NotFound() : PhysicalFile(path, "text/html");
+    /// <summary>Serves the settings dashboard page.</summary>
+    /// <returns>The dashboard HTML content.</returns>
+    [HttpGet("dashboard")]
+    public IActionResult GetDashboard() => ServePage("dashboard.cshtml");
+
+    /// <summary>Serves a razor template page from the dashboard directory, processing constants and injecting the base path.</summary>
+    /// <param name="fileName">The filename of the razor template to serve.</param>
+    /// <returns>An HTML content result or NotFound if the template does not exist.</returns>
+    private IActionResult ServePage(string fileName)
+    {
+        string requested = Path.GetFullPath(Path.Combine(s_dashboardDir, fileName));
+
+        if (!requested.StartsWith(s_dashboardDir, StringComparison.OrdinalIgnoreCase) || !IOFile.Exists(requested))
+            return NotFound();
+
+        var html = IOFile.ReadAllText(requested);
+        var fields = typeof(ShokoMyListSyncPlusConstants).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(f => f.IsLiteral && !f.IsInitOnly);
+
+        foreach (var field in fields)
+            html = Regex.Replace(html, $@"\{{\{{\s?{field.Name}\s?\}}}}", field.GetValue(null)?.ToString() ?? "");
+
+        if (html.IndexOf("<base", StringComparison.OrdinalIgnoreCase) < 0)
+            html = html.Replace("<head>", $"<head>\n    <base href=\"{WebUtility.HtmlEncode($"{Request.PathBase}{ShokoMyListSyncPlusConstants.BasePath}/dashboard/")}\">", StringComparison.OrdinalIgnoreCase);
+
+        return Content(html, "text/html");
     }
 
     /// <summary>Serves static assets (JS, CSS, SVG, ICO) from the dashboard folder.</summary>
@@ -33,25 +54,21 @@ public class DashboardController : ControllerBase
         if (string.IsNullOrWhiteSpace(path))
             return NotFound();
 
-        string pluginDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-        string dashboardDir = Path.Combine(pluginDir, "dashboard");
-        string safePath = path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-        string requested = Path.GetFullPath(Path.Combine(dashboardDir, safePath));
+        string requested = Path.GetFullPath(Path.Combine(s_dashboardDir, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar)));
 
-        if (!requested.StartsWith(Path.GetFullPath(dashboardDir), StringComparison.OrdinalIgnoreCase) || !System.IO.File.Exists(requested) || requested.EndsWith(".cshtml", StringComparison.OrdinalIgnoreCase))
-            return NotFound();
-
-        string ext = Path.GetExtension(requested).ToLowerInvariant();
-        string contentType = ext switch
-        {
-            ".css" => "text/css",
-            ".js" => "application/javascript",
-            ".svg" => "image/svg+xml",
-            ".ico" => "image/x-icon",
-            _ => "application/octet-stream",
-        };
-
-        return PhysicalFile(requested, contentType);
+        return !requested.StartsWith(s_dashboardDir, StringComparison.OrdinalIgnoreCase) || !IOFile.Exists(requested) || requested.EndsWith(".cshtml", StringComparison.OrdinalIgnoreCase)
+            ? NotFound()
+            : PhysicalFile(
+                requested,
+                Path.GetExtension(requested).ToLowerInvariant() switch
+                {
+                    ".css" => "text/css",
+                    ".js" => "application/javascript",
+                    ".svg" => "image/svg+xml",
+                    ".ico" => "image/x-icon",
+                    _ => "application/octet-stream",
+                }
+            );
     }
 }
 
@@ -66,14 +83,17 @@ public class DashboardController : ControllerBase
 public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
 {
     private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
+    private static readonly string s_logsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "logs");
 
     /// <summary>Retrieves the current status, consumes any pending logs, and returns the report URL if complete.</summary>
     /// <returns>A JSON object containing current sync metrics and logs.</returns>
     [HttpGet("status")]
     public IActionResult GetStatus()
     {
-        var logs = worker.State.Logs.ToList();
-        worker.State.Logs.Clear();
+        var logs = new List<string>();
+        while (worker.State.Logs.TryDequeue(out var log))
+            logs.Add(log);
+
         return Ok(
             new
             {
@@ -81,7 +101,6 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
                 worker.State.DryRun,
                 worker.State.MissingCount,
                 worker.State.OutOfSyncCount,
-                worker.State.AniDbWatchedLocalUnwatchedCount,
                 worker.State.ProcessedEpisodes,
                 worker.State.EpisodesSynced,
                 worker.State.Errors,
@@ -99,10 +118,10 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(fileName))
             return BadRequest("fileName is required");
-        string pluginDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-        var path = Path.Combine(pluginDir, "logs", fileName);
 
-        if (!System.IO.File.Exists(path))
+        var path = Path.Combine(s_logsDir, fileName);
+
+        if (!IOFile.Exists(path))
             return NotFound("Log not found");
 
         Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
@@ -127,7 +146,7 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
         }
 
         s_logger.Info("MyListSync: Accepted sync request (DryRun: {0}, Import: {1}, UpdateStates: {2}) -> Triggering background worker...", dryRun, import, updateStates);
-        _ = Task.Run(() => worker.StartSyncAsync(dryRun, import, updateStates, default));
+        worker.StartSync(dryRun, import, updateStates);
 
         return Ok("Sync started.");
     }

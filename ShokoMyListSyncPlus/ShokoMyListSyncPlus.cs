@@ -22,6 +22,9 @@ public class Plugin : IPlugin
     public string? EmbeddedThumbnailResourceName => "ShokoMyListSyncPlus.Assets.shoko-mylist-sync-plus-logo.png";
 
     /// <inheritdoc/>
+    public string? EmbeddedIconResourceName => "ShokoMyListSyncPlus.Assets.shoko-mylist-sync-plus-icon.png";
+
+    /// <inheritdoc/>
     public IReadOnlyList<PluginPage> GetPages() => [new PluginPage { Name = "Dashboard", Url = $"{ShokoMyListSyncPlusConstants.BasePath}/dashboard" }];
 }
 
@@ -33,10 +36,7 @@ public class Plugin : IPlugin
 public class ServiceRegistration : IPluginServiceRegistration
 {
     /// <inheritdoc/>
-    public static void RegisterServices(IServiceCollection services, IApplicationPaths applicationPaths)
-    {
-        services.AddSingleton<MyListSyncWorker>();
-    }
+    public static void RegisterServices(IServiceCollection services, IApplicationPaths applicationPaths) => services.AddSingleton<MyListSyncWorker>();
 }
 
 #endregion

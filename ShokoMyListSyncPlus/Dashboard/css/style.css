@@ -485,4 +485,8 @@ label.shoko-checkbox {
 .direction-toggle {
   width: 196px;
 }
+footer {
+  margin-right: 4px;
+  text-align: right;
+}
 /* #endregion */
