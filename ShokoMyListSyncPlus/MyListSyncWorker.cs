@@ -140,8 +140,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
                 string seriesTitle = series?.PreferredTitle?.Value ?? (!string.IsNullOrWhiteSpace(fileName) ? fileName : (action.Entry?.AnimeID > 0 ? $"AniDB: {action.Entry.AnimeID}" : "Unknown Series"));
                 string epCoords = ep != null ? $"S{ep.SeasonNumber:D2}E{ep.EpisodeNumber:D2} " : (action.Entry?.EpisodeID > 0 ? $"EpID {action.Entry.EpisodeID} " : "");
                 string fileInfo =
-                    action.Video != null ? $"(Video: {action.Video.ID})"
-                    : action.Entry?.FileID > 0 ? $"(File: {action.Entry.FileID})"
+                    action.Entry?.FileID > 0 ? $"(File: {action.Entry.FileID})"
                     : action.Entry?.MylistID > 0 ? $"(MyList ID: {action.Entry.MylistID})"
                     : "";
 
