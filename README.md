@@ -33,5 +33,7 @@ Installation can be completed via Shoko's WebUI (Recommended) or Manually. Both 
 
 1. Navigate to the plugin's dashboard at `Settings > Plugins > Shoko MyList Sync+ > Dashboard`
 2. Choose your sync direction using the toggle: `AniDB <- Shoko` (Export to AniDB) or `AniDB -> Shoko` (Import to Shoko)
-3. Uncheck **Dry Run** if you don't just want to see a preview of the potential changes to your MyList/Shoko
-4. Click **Start MyList Sync** to begin. The status log will populate automatically as the sync plan is processed
+3. Click **Start MyList Sync** to begin. The status log (accessible via the `view log` link) will populate automatically as the sync plan is processed
+
+> [!IMPORTANT]
+> Syncing with this tool should be done sparingly and never in rapid succession. This prevents evaluating against stale data.
