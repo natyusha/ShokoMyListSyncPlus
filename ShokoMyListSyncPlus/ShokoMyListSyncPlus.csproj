@@ -13,13 +13,18 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Shoko MyList Sync+</Title>
     <Authors>natyusha</Authors>
 
+    <NameRegex>Name\s*=\s*"([^"]+)"</NameRegex>
     <VersionRegex>Version\s*=\s*"([^"]+)"</VersionRegex>
+    <DescriptionRegex>Description\s*=\s*"([^"]+)"</DescriptionRegex>
+    <PluginIdRegex>PluginId\s*=\s*"([^"]+)"</PluginIdRegex>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <ShokoMyListSyncPlusConstantsFile>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/ShokoMyListSyncPlusConstants.cs'))</ShokoMyListSyncPlusConstantsFile>
+    <Title>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(NameRegex)).Groups[1].Value)</Title>
     <Version>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(VersionRegex)).Groups[1].Value)</Version>
+    <Description>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(DescriptionRegex)).Groups[1].Value)</Description>
+    <PluginId>$([System.Text.RegularExpressions.Regex]::Match($(ShokoMyListSyncPlusConstantsFile), $(PluginIdRegex)).Groups[1].Value)</PluginId>
 
     <ReleaseChannel Condition="'$(RELEASE_CHANNEL)' != ''">$(RELEASE_CHANNEL)</ReleaseChannel>
     <ReleaseChannel Condition="'$(RELEASE_CHANNEL)' == ''">Dev</ReleaseChannel>
@@ -35,9 +40,9 @@
 
   <!-- Embed Identity Metadata manually to satisfy Shoko Server's pre-load checks -->
   <ItemGroup>
-    <AssemblyMetadata Include="PackageID" Value="f4d3c2b1-a9e8-7f6d-5c4b-3a2b1c0d9e8f" />
+    <AssemblyMetadata Include="PackageID" Value="$(PluginId)" />
     <AssemblyMetadata Include="PackageName" Value="$(Title)" />
-    <AssemblyMetadata Include="PackageOverview" Value="Syncs Shoko's database state to AniDB's MyList and vice versa." />
+    <AssemblyMetadata Include="PackageOverview" Value="$(Description)" />
   </ItemGroup>
 
   <ItemGroup>

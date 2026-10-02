@@ -9,7 +9,7 @@ public static class ShokoMyListSyncPlusConstants
     public const string Name = "Shoko MyList Sync+";
 
     /// <summary>Description of the plugin.</summary>
-    public const string Description = "Syncs Shoko's database state to AniDB's MyList using native IMylistService integration.";
+    public const string Description = "Syncs Shoko's database state to AniDB's MyList and vice versa.";
 
     /// <summary>Current version string.</summary>
     public const string Version = "2.0.1";
