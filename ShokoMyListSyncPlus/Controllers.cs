@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using NLog;
 using IOFile = System.IO.File;
 
@@ -17,6 +18,7 @@ namespace ShokoMyListSyncPlus;
 public class DashboardController : ControllerBase
 {
     private static readonly string s_dashboardDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "dashboard");
+    private static readonly FileExtensionContentTypeProvider s_contentTypeProvider = new();
 
     /// <summary>Serves the settings dashboard page.</summary>
     /// <returns>The dashboard HTML content.</returns>
@@ -45,7 +47,7 @@ public class DashboardController : ControllerBase
         return Content(html, "text/html");
     }
 
-    /// <summary>Serves static assets (JS, CSS, SVG, ICO) from the dashboard folder.</summary>
+    /// <summary>Serves the static assets (JS, CSS, fonts, images) from the dashboard folder.</summary>
     /// <param name="path">The relative asset path.</param>
     /// <returns>Physical file content with correct MIME type.</returns>
     [HttpGet("dashboard/{*path}")]
@@ -58,17 +60,7 @@ public class DashboardController : ControllerBase
 
         return !requested.StartsWith(s_dashboardDir, StringComparison.OrdinalIgnoreCase) || !IOFile.Exists(requested) || requested.EndsWith(".cshtml", StringComparison.OrdinalIgnoreCase)
             ? NotFound()
-            : PhysicalFile(
-                requested,
-                Path.GetExtension(requested).ToLowerInvariant() switch
-                {
-                    ".css" => "text/css",
-                    ".js" => "application/javascript",
-                    ".svg" => "image/svg+xml",
-                    ".ico" => "image/x-icon",
-                    _ => "application/octet-stream",
-                }
-            );
+            : PhysicalFile(requested, s_contentTypeProvider.TryGetContentType(requested, out var contentType) ? contentType : "application/octet-stream");
     }
 }
 
