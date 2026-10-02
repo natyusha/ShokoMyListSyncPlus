@@ -13,6 +13,34 @@
   "icon_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-icon.png",
   "releases": [
     {
+      "version": "2.0.1",
+      "tag": "v2.0.1",
+      "source_revision": "4c888f11593fa445cca730ee3ac4ae56925a0394",
+      "released_at": "2026-10-02T23:41:29Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Update overview text\r\n- Extract plugin identity metadata from constants in project file\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v2.0.0...v2.0.1",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.1/ShokoMyListSyncPlus-v2.0.1_linux-arm64.zip",
+          "checksum": "sha256:52ff1dd717c2152c8a64cafe964732c42806ddae810e880fb7e8028f424421de"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.1/ShokoMyListSyncPlus-v2.0.1_linux-x64.zip",
+          "checksum": "sha256:dd328d624bbfed6156d571f98da4c8221569e8707abb1f4d056d523196cd213a"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.1/ShokoMyListSyncPlus-v2.0.1_win-x64.zip",
+          "checksum": "sha256:d8070f3a1021b6dea2e11d2dacd726b2ba47817df7736044999cc746a02c463b"
+        }
+      ]
+    },
+    {
       "version": "2.0.0",
       "tag": "v2.0.0",
       "source_revision": "7ef223c4a64714545406833e61739e2cabe8f841",
