@@ -13,6 +13,34 @@
   "icon_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-icon.png",
   "releases": [
     {
+      "version": "2.0.0",
+      "tag": "v2.0.0",
+      "source_revision": "7ef223c4a64714545406833e61739e2cabe8f841",
+      "released_at": "2026-10-02T21:43:53Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Migrated fully to Shoko Server's native `IMylistService`, eliminating the need for manual XML/TGZ export downloads and legacy API calls.\r\n- Introduced an interactive dashboard direction toggle to easily switch between export (`AniDB <- Shoko`) and import (`AniDB -> Shoko`) modes, alongside a configurable \"Update States\" option.\r\n- Enhanced action logging and reports to automatically resolve human-readable series titles, season/episode coordinates, and file identifiers using `IMetadataService`.\r\n- Added dynamic razor page templating (`ServePage`) for automated base URL injection and dynamic footer versioning.\r\n- Replaced manual extension switches with `FileExtensionContentTypeProvider` for robust, native MIME type resolution across web assets and fonts.\r\n- Hardened background task execution with safe exception handling and thread-safe queue polling to prevent task lockups.\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v1.0.4...v2.0.0",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.0/ShokoMyListSyncPlus-v2.0.0_linux-arm64.zip",
+          "checksum": "sha256:1c9501fca06b4ebfda61edf5bd9138aec13a37762d4185e0bc14d8523fa16cde"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.0/ShokoMyListSyncPlus-v2.0.0_linux-x64.zip",
+          "checksum": "sha256:f5bc0aaa9afb9c294b40204ee8ae225d38e8562d6fb3bf4da3e680d119e6f1ae"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.0/ShokoMyListSyncPlus-v2.0.0_win-x64.zip",
+          "checksum": "sha256:86b540fe1bc16265b6684e6ca1fc82665e63d3dfb6710ab9af89429248b4e81a"
+        }
+      ]
+    },
+    {
       "version": "1.0.4",
       "tag": "v1.0.4",
       "source_revision": "9067493f2fef44ef9eb90282d13de4d94ca2cca3",
