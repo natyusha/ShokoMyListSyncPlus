@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/ShokoAnime/ShokoServer/master/Shoko.BuildTools/manifest.schema.json",
   "id": "f4d3c2b1-a9e8-7f6d-5c4b-3a2b1c0d9e8f",
   "name": "Shoko MyList Sync+",
-  "overview": "Syncs Shoko's database state to AniDB's MyList by verifying it against a xml-cdb MyList Export.",
+  "overview": "Syncs Shoko's database state to AniDB's MyList and vice versa.",
   "authors": "natyusha",
   "repository_url": "https://github.com/natyusha/ShokoMyListSyncPlus",
   "tags": [
