@@ -12,7 +12,7 @@ public static class ShokoMyListSyncPlusConstants
     public const string Description = "Syncs Shoko's database state to AniDB's MyList and vice versa.";
 
     /// <summary>Current version string.</summary>
-    public const string Version = "2.0.1";
+    public const string Version = "2.0.2";
 
     /// <summary>Internal API version.</summary>
     public const string ApiVersion = "1";
