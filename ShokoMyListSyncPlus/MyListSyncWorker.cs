@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Shoko.Abstractions.Metadata.Anidb.Enums;
 using Shoko.Abstractions.Metadata.Anidb.Models;
 using Shoko.Abstractions.Metadata.Anidb.Services;
@@ -43,11 +43,10 @@ public class SyncState
 }
 
 /// <summary>Background worker responsible for orchestrating the native MyList sync and generating reports.</summary>
-public class MyListSyncWorker(IMylistService mylistService, IMetadataService metadataService)
+public class MyListSyncWorker(IMylistService mylistService, IMetadataService metadataService, ILogger<MyListSyncWorker> logger)
 {
     #region Setup & State
 
-    private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
     private static readonly string s_logsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "logs");
 
     /// <summary>The live state of the sync worker.</summary>
@@ -87,7 +86,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
             State.LastReportUrl = null;
             State.Logs.Clear();
 
-            s_logger.Info("MyListSync: Starting native sync task (DryRun: {0}, Import: {1}, UpdateStates: {2})", dryRun, import, updateStates);
+            logger.LogInformation("MyListSync: Starting native sync task (DryRun: {DryRun}, Import: {Import}, UpdateStates: {UpdateStates})", dryRun, import, updateStates);
             Log("Fetching AniDB MyList and calculating sync plan...");
 
             var options = new MylistSyncOptions
@@ -104,7 +103,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
             var result = await mylistService.SyncAsync(options, ct).ConfigureAwait(false);
             if (result == null)
             {
-                s_logger.Warn("MyListSync: Sync failed to start. Another sync may be currently running in Shoko.");
+                logger.LogWarning("MyListSync: Sync failed to start. Another sync may be currently running in Shoko.");
                 Log("Fatal Error: Sync failed to start. Another MyList sync is likely already running in Shoko.");
                 return;
             }
@@ -163,7 +162,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
                 var appliedResult = await mylistService.ApplySyncPlanAsync(new MylistSyncPlan { CreatedAt = result.Plan.CreatedAt, Actions = relevantActions }, ct).ConfigureAwait(false);
                 if (appliedResult == null)
                 {
-                    s_logger.Warn("MyListSync: Failed to apply sync plan. Another sync may be currently running.");
+                    logger.LogWarning("MyListSync: Failed to apply sync plan. Another sync may be currently running.");
                     Log("Fatal Error: Failed to apply sync plan. Another MyList sync is likely already running in Shoko.");
                     return;
                 }
@@ -173,11 +172,17 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
             }
 
             Log($"{(dryRun ? "Dry Run completed. Would process" : "Sync completed successfully. Processed")} {relevantActions.Count} actions (Direction: {(import ? "AniDB -> Shoko" : "AniDB <- Shoko")}).");
-            s_logger.Info(dryRun ? "MyListSync: Task completed successfully (Dry Run)." : "MyListSync: Task completed successfully -> Synced {0} items.", State.EpisodesSynced);
+            if (!dryRun)
+            {
+                Log("Notice: Shoko Server caches your AniDB MyList state. Avoid running subsequent syncs immediately to prevent evaluating against stale data.");
+                logger.LogInformation("MyListSync: Task completed successfully -> Synced {Count} items.", State.EpisodesSynced);
+            }
+            else
+                logger.LogInformation("MyListSync: Task completed successfully (Dry Run).");
         }
         catch (Exception ex)
         {
-            s_logger.Error(ex, "MyListSync: Fatal error encountered during execution");
+            logger.LogError(ex, "MyListSync: Fatal error encountered during execution");
             Log($"Fatal Error: {ex.Message}");
             State.Errors++;
         }
@@ -224,7 +229,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
         }
         catch (Exception ex)
         {
-            s_logger.Warn(ex, "MyListSync: Failed to generate report log.");
+            logger.LogWarning(ex, "MyListSync: Failed to generate report log.");
         }
     }
 

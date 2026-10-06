@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using NLog;
+using Microsoft.Extensions.Logging;
 using IOFile = System.IO.File;
 
 namespace ShokoMyListSyncPlus;
@@ -72,9 +72,8 @@ public class DashboardController : ControllerBase
 [ApiController]
 [ApiVersion(ShokoMyListSyncPlusConstants.ApiVersion)]
 [Route(ShokoMyListSyncPlusConstants.BasePath)]
-public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
+public class MyListSyncController(MyListSyncWorker worker, ILogger<MyListSyncController> logger) : ControllerBase
 {
-    private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
     private static readonly string s_logsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "logs");
 
     /// <summary>Retrieves the current status, consumes any pending logs, and returns the report URL if complete.</summary>
@@ -133,11 +132,11 @@ public class MyListSyncController(MyListSyncWorker worker) : ControllerBase
     {
         if (worker.State.IsRunning)
         {
-            s_logger.Warn("MyListSync: Rejected sync request -> A sync task is already running.");
+            logger.LogWarning("MyListSync: Rejected sync request -> A sync task is already running.");
             return BadRequest("Sync is already running.");
         }
 
-        s_logger.Info("MyListSync: Accepted sync request (DryRun: {0}, Import: {1}, UpdateStates: {2}) -> Triggering background worker...", dryRun, import, updateStates);
+        logger.LogInformation("MyListSync: Accepted sync request (DryRun: {DryRun}, Import: {Import}, UpdateStates: {UpdateStates}) -> Triggering background worker...", dryRun, import, updateStates);
         worker.StartSync(dryRun, import, updateStates);
 
         return Ok("Sync started.");
