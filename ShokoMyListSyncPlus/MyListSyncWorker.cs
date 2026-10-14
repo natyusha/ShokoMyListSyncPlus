@@ -97,7 +97,7 @@ public class MyListSyncWorker(IMylistService mylistService, IMetadataService met
                 SetWatched = !import,
                 SetUnwatched = !import,
                 UpdateStates = !import && updateStates,
-                Targets = MylistSyncTargets.Videos,
+                Targets = MylistSyncTargets.All,
             };
 
             var result = await mylistService.SyncAsync(options, ct).ConfigureAwait(false);
