@@ -13,6 +13,34 @@
   "icon_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-icon.png",
   "releases": [
     {
+      "version": "2.0.2",
+      "tag": "v2.0.2",
+      "source_revision": "2dd0c589d576661f0c5643df0e755101a9cf26dd",
+      "released_at": "2026-10-09T10:28:37Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Removed NLog dependency and static logger instances in favor of container-injected loggers\r\n- Bumped Shoko.Abstractions to v6.0.0-alpha.102\r\n- Updated linting workflow\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v2.0.1...v2.0.2",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.2/ShokoMyListSyncPlus-v2.0.2_linux-arm64.zip",
+          "checksum": "sha256:59a1f7ec09b1eb30c530decab64f83a61277b166cdb5d770caafb9353fe448bf"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.2/ShokoMyListSyncPlus-v2.0.2_linux-x64.zip",
+          "checksum": "sha256:e3e70d43e144de0b66ea13db88b32c0ac2f0ad24e05336d07f5dd0971e5a0558"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.2/ShokoMyListSyncPlus-v2.0.2_win-x64.zip",
+          "checksum": "sha256:525820455ae5cd43939d6a4e35182a47e968e4312d6b59f03f1adc89bea13f35"
+        }
+      ]
+    },
+    {
       "version": "2.0.1",
       "tag": "v2.0.1",
       "source_revision": "4c888f11593fa445cca730ee3ac4ae56925a0394",
