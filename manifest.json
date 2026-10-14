@@ -13,6 +13,34 @@
   "icon_url": "https://raw.githubusercontent.com/natyusha/ShokoMyListSyncPlus/master/ShokoMyListSyncPlus/Assets/shoko-mylist-sync-plus-icon.png",
   "releases": [
     {
+      "version": "2.0.3",
+      "tag": "v2.0.3",
+      "source_revision": "e69033091a52f8b69b8a64761b13a6c802862847",
+      "released_at": "2026-10-14T09:06:17Z",
+      "channel": "Stable",
+      "release_notes": "**Changes:**\r\n- Fixed an issue where generic entries were not being considered during the sync\r\n- Bumped Shoko.Abstractions to v6.0.0-alpha.105\r\n\r\n**Full Changelog**: https://github.com/natyusha/ShokoMyListSyncPlus/compare/v2.0.2...v2.0.3",
+      "archives": [
+        {
+          "runtime": "linux-arm64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.3/ShokoMyListSyncPlus-v2.0.3_linux-arm64.zip",
+          "checksum": "sha256:f1fe3d33061cb8ed52512492b703086edc25270a6115e62bb108749c90a5f71f"
+        },
+        {
+          "runtime": "linux-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.3/ShokoMyListSyncPlus-v2.0.3_linux-x64.zip",
+          "checksum": "sha256:cdad11c64a5e0df3e179131bc1dff8180c9704905d8a0ec5c82df263bd413632"
+        },
+        {
+          "runtime": "win-x64",
+          "abstraction": "6.0.0",
+          "url": "https://github.com/natyusha/ShokoMyListSyncPlus/releases/download/v2.0.3/ShokoMyListSyncPlus-v2.0.3_win-x64.zip",
+          "checksum": "sha256:c974a07b3c0c5f1676f9101f397885dbe8425f43a4fc232fa7194cf28a7a2d24"
+        }
+      ]
+    },
+    {
       "version": "2.0.2",
       "tag": "v2.0.2",
       "source_revision": "2dd0c589d576661f0c5643df0e755101a9cf26dd",
