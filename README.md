@@ -8,6 +8,9 @@
 
 <!-- prettier-ignore-end -->
 
+> [!WARNING]  
+> This repository has been archived as updated MyList Sync functionality is now natively supported in Shoko's WebUI.
+
 This is a companion plugin for Shoko Server that syncs Shoko's database state to AniDB's MyList by verifying it against your AniDB MyList.
 
 For long-time Shoko Server users, it is quite common for the AniDB MyList to become somewhat desynced from Shoko. This plugin identifies any files or episodes indexed by Shoko that are not currently synced to your AniDB account, or whose watched states differ, and automatically syncs them via Shoko's internal MyList service.
